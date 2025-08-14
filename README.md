@@ -10,7 +10,7 @@
 ---
 
 ## 🎯 **Project Overview**
-![alt text](image.png)
+![alt text](image.png)<br />
 
 This project implements a complete MLOps pipeline for predicting Premier League match outcomes, including win/loss/draw probabilities and goal predictions. Built with production-ready practices, the system ingests data from footballdata.uk, processes historical match data, engineers meaningful features, trains predictive models, and serves predictions through an interactive Streamlit dashboard.
 
