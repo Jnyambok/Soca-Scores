@@ -1,1 +1,10 @@
-psycopg2-binary asyncpg python-dotenv
+psycopg2-binary
+asyncpg
+python-dotenv
+pandas
+numpy
+
+
+seaborn
+matplotlib
+scikit-learn
