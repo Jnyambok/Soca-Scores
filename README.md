@@ -15,6 +15,7 @@ This project implements a complete MLOps pipeline for predicting Premier League 
 
 ### **🏆 Key Features**
 - **Automated Data Ingestion** from footballdata.uk
+- **Database Storage** through a serveless PostgresSql DB
 - **Feature Store** for managing engineered features
 - **Model Registry** with versioning and experiment tracking
 - **Real-time Predictions** via Streamlit dashboard
@@ -53,10 +54,10 @@ Data Ingestion → Feature Engineering → Model Training → Evaluation → Dep
 
 ---
 
-## 📁 **Project Structure**
+## 📁 **Expected Project Structure (Might Change as per needed requirements)** 
 
 ```
-premier_league_predictions/
+premier_league_predictions/  
 │
 ├── 📊 data/                        # Data storage layers
 │   ├── raw/                        # Raw CSV files from footballdata.uk
