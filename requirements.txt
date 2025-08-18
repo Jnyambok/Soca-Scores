@@ -1,3 +1,4 @@
+
 psycopg2-binary
 asyncpg
 python-dotenv
@@ -8,3 +9,4 @@ numpy
 seaborn
 matplotlib
 scikit-learn
+loguru
