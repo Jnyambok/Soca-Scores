@@ -12,10 +12,10 @@ from dataclasses import dataclass
 
 @dataclass
 class DataIngestionConfig:
-    project_root = Path().absolute().parent.parent
+    project_root = Path(__file__).resolve().parent.parent.parent  # jnyambok-soca-scores/
     data_dir = project_root / "datasets" 
     common_data_dir = data_dir / "common_data"
-    csv_file = common_data_dir / "english_league_data_url.csv"
+    csv_file = common_data_dir / "english_league_data_urls.csv"
 
 class DataIngestion:
     def __init__(self):
@@ -29,12 +29,13 @@ class DataIngestion:
                 urls = pd.read_csv(self.ingestion_config.csv_file)
                 logging.info(f'📊File has been loaded successfully. The url dataset has {urls.shape[0]} rows and {urls.shape[1]} columns')
             else:
-                print(f"❌ File not found: {self.ingestion_config.csv_file}")
+                logging.info(f"❌ File not found: {self.ingestion_config.csv_file}")
         except Exception as e:
             raise CustomException(e,sys)
 
 
 if __name__ == "__main__":
     obj = DataIngestion()
+    obj.load_csv()
 
 
