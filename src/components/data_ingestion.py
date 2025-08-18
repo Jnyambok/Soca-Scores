@@ -31,7 +31,8 @@ class DataIngestion:
             else:
                 logging.info(f"❌ File not found: {self.ingestion_config.csv_file}")
         except Exception as e:
-            raise CustomException(e,sys)
+            raise CustomException(e, sys) from e
+        print("Data Source has been identified")
 
 
 if __name__ == "__main__":
