@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
+To run python -m src.components.data_ingestion
 
 ## 🎯 **Project Overview**
 ![alt text](image.png)<br />
