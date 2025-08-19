@@ -8,16 +8,18 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
-To run python -m src.components.data_ingestion
+To run python -m src. components.<module.py>
+Please note that some workflows and/or tools might be added or deleted at my discretion as per my needs.
+
 
 ## 🎯 **Project Overview**
 ![alt text](image.png)<br />
 
-This project implements a complete MLOps pipeline for predicting Premier League match outcomes, including win/loss/draw probabilities and goal predictions. Built with production-ready practices, the system ingests data from footballdata.uk, processes historical match data, engineers meaningful features, trains predictive models, and serves predictions through an interactive Streamlit dashboard.
+This project implements a comprehensive MLOps pipeline for predicting Premier League match outcomes, including win/loss/draw probabilities, as well as goal predictions. Built with production-ready practices, the system ingests data from footballdata.uk, processes historical match data, engineers meaningful features, trains predictive models, and serves predictions through an interactive Streamlit dashboard.
 
 ### **🏆 Key Features**
 - **Automated Data Ingestion** from footballdata.uk
-- **Database Storage** through a serveless PostgresSql DB
+- **Database Storage** through a serverless PostgreSQL DB
 - **Feature Store** for managing engineered features
 - **Model Registry** with versioning and experiment tracking
 - **Real-time Predictions** via Streamlit dashboard
@@ -28,23 +30,23 @@ This project implements a complete MLOps pipeline for predicting Premier League 
 
 ## 🚀 **Approach & Methodology**
 
-### **🔄 MLOps Lifecycle**
+### **🔄 My MLOps Lifecycle approach**
 ```
-Data Ingestion → Feature Engineering → Model Training → Evaluation → Deployment → Monitoring
-        ↑                                                                            ↓
-        ←←←←←←←←←←←←←←← Continuous Improvement Loop ←←←←←←←←←←←←←←←←←←←←←←←←←←←
+Data Ingestion → Data Cleaning,Transformation and DB Loading → EDA -> Feature Engineering and Feature Store Storage → Model Training → Evaluation → Deployment → Monitoring
+        ↑                                                                                                                                                              ↓
+        ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←← **Continuous Improvement Loop** ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
 ```
 
 ### **📊 Data Strategy**
-- **Source**: Historical Premier League data from footballdata.uk (CSV format)
+- **Source**: Historical Premier League data from footballdata.UK (CSV format)
 - **Scope**: Multiple seasons of match data with team statistics
-- **Updates**: Daily ingestion during active season
+- **Updates**: Weekly ingestion during active season
 - **Quality**: Automated validation and cleaning pipelines
 
 ### **🤖 Machine Learning Approach**
-- **Problem Type**: Multi-class classification (Win/Draw/Loss) + Regression (Goal prediction)
+- **Problem Type**: Multi-class classification (Win/Draw/Loss) + Regression (Goal prediction - optional or future consideration)
 - **Feature Engineering**: Team form, head-to-head records, player statistics, seasonal trends
-- **Model Selection**: Ensemble methods (XGBoost, Random Forest) with hyperparameter optimization
+- **Model Selection**: Ensemble methods with hyperparameter optimization
 - **Evaluation**: Cross-validation with time-series split for temporal data
 
 ### **🏗️ MLOps Architecture**
@@ -62,10 +64,11 @@ Data Ingestion → Feature Engineering → Model Training → Evaluation → Dep
 premier_league_predictions/  
 │
 ├── 📊 data/                        # Data storage layers
-│   ├── raw/                        # Raw CSV files from footballdata.uk
-│   ├── processed/                  # Cleaned and merged datasets
-│   ├── features/                   # Feature store data
-│   └── predictions/                # Model predictions output
+│   ├── common_data/                        # Raw CSV files from footballdata.uk containing URLs and any other common usable data
+│   ├── ingested_data/                      # Merged datasets
+│   ├── cleaned_data/                       # Cleaned datasets for DB loading
+│   └── feature_store_data/                 # Transformed feature stores
+|   └── predictions/                        # Model predictions output
 │
 ├── 🧪 experiments/                 # ML experimentation workspace
 │   ├── notebooks/                  # Jupyter notebooks for EDA
@@ -119,9 +122,32 @@ premier_league_predictions/
 │   ├── integration/                # Integration tests
 │   └── fixtures/                   # Test data
 │
-└── 📚 docs/                        # Project documentation
-    ├── API_DOCS.md                 # API documentation
-    └── DEPLOYMENT.md               # Deployment guide
+└── logger
+└── logger
+
+```
+
+## 📁 **Current Project Structure** 
+```
+
+Directory structure:
+└── jnyambok-soca-scores/
+    ├── README.md
+    ├── requirements.txt
+    ├── datasets/
+    │   └── common_data/
+    │       └── english_league_data_urls.csv
+    ├── experiments/
+    │   └── notebooks/
+    │       └── data_ingestion.ipynb
+    └── src/
+        ├── __init__.py
+        ├── exception.py
+        ├── logger.py
+        └── components/
+            ├── __init__.py
+            └── data_ingestion.py
+
 ```
 
 ---
@@ -131,10 +157,10 @@ premier_league_predictions/
 | Component | Technology | Purpose |
 |-----------|------------|---------|
 | **Data Processing** | `pandas`, `numpy` | Data manipulation and analysis |
-| **Machine Learning** | `scikit-learn`, `xgboost` | Model training and evaluation |
+| **Machine Learning** | `scikit-learn` | Model training and evaluation |
 | **Feature Store** | `Feast` / Custom | Feature management and serving |
-| **Database** | `PostgreSQL` | Data persistence |
-| **Orchestration** | `Apache Airflow` | Pipeline automation |
+| **Database** | `NEON DB` | Data persistence |
+| **Orchestration** | `Apache Airflow`, `Prefect` | Pipeline automation |
 | **Experiment Tracking** | `MLflow` | Model versioning and tracking |
 | **Frontend** | `Streamlit` | Interactive dashboard |
 | **API** | `FastAPI` | REST API services |
@@ -162,7 +188,7 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
-pip install -r requirements/base.txt
+pip install -r requirements.txt
 ```
 
 ### **Run Individual Components**
@@ -203,29 +229,17 @@ python scripts/run_full_pipeline.py
 - Support betting strategy research (educational purposes)
 - Demonstrate MLOps best practices in sports analytics
 
----
 
-## 🔄 **MLOps Features**
-
-- ✅ **Automated Data Pipelines**: Scheduled data ingestion and processing
-- ✅ **Feature Versioning**: Track and manage feature evolution
-- ✅ **Model Registry**: Centralized model management with A/B testing
-- ✅ **Continuous Training**: Automated model retraining on new data
-- ✅ **Drift Detection**: Monitor data and model performance degradation
-- ✅ **Deployment Automation**: CI/CD pipelines for seamless updates
-- ✅ **Monitoring & Alerting**: Real-time system health monitoring
-
----
 
 ## 📈 **Roadmap**
 
-### **Phase 1: Foundation** ✅
+### **Phase 1: Data Ingestion** ✅ (Finished on 08/19)
 - [x] Project structure and configuration
-- [x] Data ingestion pipeline
-- [x] Basic feature engineering
-- [x] Initial model training
+- [x] Loading dataset urls
+- [x] Ingesting data from data sources (footballdata.uk)
+- [x] Merging the various datasets and storing locally
 
-### **Phase 2: Core MLOps** 🔄
+### **Phase 2: Data Cleaning x Transformation and Database Loading**
 - [ ] Feature store implementation
 - [ ] Model registry setup
 - [ ] Streamlit dashboard
