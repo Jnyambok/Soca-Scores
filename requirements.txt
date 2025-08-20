@@ -4,9 +4,6 @@ asyncpg
 python-dotenv
 pandas
 numpy
-
-
 seaborn
 matplotlib
 scikit-learn
-loguru
