@@ -1,8 +1,11 @@
 # ⚽ Soca Scores - MLOps Pipeline
 
+
+
+
 ## First Article in the Series : [Phase 0: Setting up the Development Environment](https://medium.com/p/1960fb160e30)
 
-
+[Data Project Structure Best Practices](https://medium.com/the-pythonworld/best-practices-for-structuring-a-python-project-like-a-pro-be6013821168)
 
 
 > **A comprehensive machine learning operations (MLOps) project for predicting English Premier League match outcomes using historical data and advanced feature engineering.**
