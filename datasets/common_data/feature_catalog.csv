@@ -1,0 +1,143 @@
+Feature_name,Feature_description,Betting_odd
+Div,League Division,FALSE
+Date,Match Date (dd/mm/yy),FALSE
+Time,Time of match kick off,FALSE
+HomeTeam,Home Team,FALSE
+AwayTeam,Away Team,FALSE
+FTHG,Full Time Home Team Goals,FALSE
+FTAG,Full Time Away Team Goals,FALSE
+FTR,"Full Time Result (H=Home Win, D=Draw, A=Away Win)",FALSE
+HTHG,Half Time Home Team Goals,FALSE
+HTAG,Half Time Away Team Goals,FALSE
+HTR,"Half Time Result (H=Home Win, D=Draw, A=Away Win)",FALSE
+Referee,Match Referee,FALSE
+HS,Home Team Shots,FALSE
+AS,Away Team Shots,FALSE
+HST,Home Team Shots on Target,FALSE
+AST,Away Team Shots on Target,FALSE
+HHW,Home Team Hit Woodwork,FALSE
+AHW,Away Team Hit Woodwork,FALSE
+HC,Home Team Corners,FALSE
+AC,Away Team Corners,FALSE
+HF,Home Team Fouls Committed,FALSE
+AF,Away Team Fouls Committed,FALSE
+HFKC,Home Team Free Kicks Conceded,FALSE
+AFKC,Away Team Free Kicks Conceded,FALSE
+HO,Home Team Offsides,FALSE
+AO,Away Team Offsides,FALSE
+HY,Home Team Yellow Cards,FALSE
+AY,Away Team Yellow Cards,FALSE
+HR,Home Team Red Cards,FALSE
+AR,Away Team Red Cards,FALSE
+HBP,"Home Team Bookings Points (10 = yellow, 25 = red)",FALSE
+ABP,"Away Team Bookings Points (10 = yellow, 25 = red)",FALSE
+1XBH,1XBet home win odds,TRUE
+1XBD,1XBet draw odds,TRUE
+1XBA,1XBet away win odds,TRUE
+B365H,Bet365 home win odds,TRUE
+B365D,Bet365 draw odds,TRUE
+B365A,Bet365 away win odds,TRUE
+BFH,Betfair home win odds,TRUE
+BFD,Betfair draw odds,TRUE
+BFA,Betfair away win odds,TRUE
+BFDH,Betfred home win odds,TRUE
+BFDD,Betfred draw odds,TRUE
+BFDA,Betfred away win odds,TRUE
+BMGMH,BetMGM home win odds,TRUE
+BMGMD,BetMGM draw odds,TRUE
+BMGMA,BetMGM away win odds,TRUE
+BVH,Betvictor home win odds,TRUE
+BVD,Betvictor draw odds,TRUE
+BVA,Betvictor away win odds,TRUE
+BSH,Blue Square home win odds,TRUE
+BSD,Blue Square draw odds,TRUE
+BSA,Blue Square away win odds,TRUE
+BWH,Bet&Win home win odds,TRUE
+BWD,Bet&Win draw odds,TRUE
+BWA,Bet&Win away win odds,TRUE
+CLH,Coral home win odds,TRUE
+CLD,Coral draw odds,TRUE
+CLA,Coral away win odds,TRUE
+GBH,Gamebookers home win odds,TRUE
+GBD,Gamebookers draw odds,TRUE
+GBA,Gamebookers away win odds,TRUE
+IWH,Interwetten home win odds,TRUE
+IWD,Interwetten draw odds,TRUE
+IWA,Interwetten away win odds,TRUE
+LBH,Ladbrokes home win odds,TRUE
+LBD,Ladbrokes draw odds,TRUE
+LBA,Ladbrokes away win odds,TRUE
+PSH / PH,Pinnacle home win odds,TRUE
+PSD / PD,Pinnacle draw odds,TRUE
+PSA / PA,Pinnacle away win odds,TRUE
+SOH,Sporting Odds home win odds,TRUE
+SOD,Sporting Odds draw odds,TRUE
+SOA,Sporting Odds away win odds,TRUE
+SBH,Sportingbet home win odds,TRUE
+SBD,Sportingbet draw odds,TRUE
+SBA,Sportingbet away win odds,TRUE
+SJH,Stan James home win odds,TRUE
+SJD,Stan James draw odds,TRUE
+SJA,Stan James away win odds,TRUE
+SYH,Stanleybet home win odds,TRUE
+SYD,Stanleybet draw odds,TRUE
+SYA,Stanleybet away win odds,TRUE
+VCH,"VC Bet home win odds (now BetVictor, see above)",TRUE
+VCD,"VC Bet draw odds (now BetVictor, see above)",TRUE
+VCA,"VC Bet away win odds (now BetVictor, see above)",TRUE
+WHH,William Hill home win odds,TRUE
+WHD,William Hill draw odds,TRUE
+WHA,William Hill away win odds,TRUE
+Bb1X2,Number of BetBrain bookmakers used to calculate match odds averages and maximums,TRUE
+BbMxH,Betbrain maximum home win odds,TRUE
+BbAvH,Betbrain average home win odds,TRUE
+BbMxD,Betbrain maximum draw odds,TRUE
+BbAvD,Betbrain average draw win odds,TRUE
+BbMxA,Betbrain maximum away win odds,TRUE
+BbAvA,Betbrain average away win odds,TRUE
+MaxH,Market maximum home win odds,TRUE
+MaxD,Market maximum draw win odds,TRUE
+MaxA,Market maximum away win odds,TRUE
+AvgH,Market average home win odds,TRUE
+AvgD,Market average draw win odds,TRUE
+AvgA,Market average away win odds,TRUE
+BFEH,Betfair Exchange home win odds,TRUE
+BFED,Betfair Exchange draw odds,TRUE
+BFEA,Betfair Exchange away win odds,TRUE
+BbOU,Number of BetBrain bookmakers used to calculate over/under 2.5 goals (total goals) averages and maximums,TRUE
+BbMx>2.5,Betbrain maximum over 2.5 goals,TRUE
+BbAv>2.5,Betbrain average over 2.5 goals,TRUE
+BbMx<2.5,Betbrain maximum under 2.5 goals,TRUE
+BbAv<2.5,Betbrain average under 2.5 goals,TRUE
+GB>2.5,Gamebookers over 2.5 goals,TRUE
+GB<2.5,Gamebookers under 2.5 goals,TRUE
+B365>2.5,Bet365 over 2.5 goals,TRUE
+B365<2.5,Bet365 under 2.5 goals,TRUE
+P>2.5,Pinnacle over 2.5 goals,TRUE
+P<2.5,Pinnacle under 2.5 goals,TRUE
+Max>2.5,Market maximum over 2.5 goals,TRUE
+Max<2.5,Market maximum under 2.5 goals,TRUE
+Avg>2.5,Market average over 2.5 goals,TRUE
+Avg<2.5,Market average under 2.5 goals,TRUE
+BbAH,Number of BetBrain bookmakers used to Asian handicap averages and maximums,TRUE
+BbAHh,Betbrain size of handicap (home team),TRUE
+AHh,Market size of handicap (home team) (since 2019/2020),TRUE
+BbMxAHH,Betbrain maximum Asian handicap home team odds,TRUE
+BbAvAHH,Betbrain average Asian handicap home team odds,TRUE
+BbMxAHA,Betbrain maximum Asian handicap away team odds,TRUE
+BbAvAHA,Betbrain average Asian handicap away team odds,TRUE
+GBAHH,Gamebookers Asian handicap home team odds,TRUE
+GBAHA,Gamebookers Asian handicap away team odds,TRUE
+GBAH,Gamebookers size of handicap (home team),TRUE
+LBAHH,Ladbrokes Asian handicap home team odds,TRUE
+LBAHA,Ladbrokes Asian handicap away team odds,TRUE
+LBAH,Ladbrokes size of handicap (home team),TRUE
+B365AHH,Bet365 Asian handicap home team odds,TRUE
+B365AHA,Bet365 Asian handicap away team odds,TRUE
+B365AH,Bet365 size of handicap (home team),TRUE
+PAHH,Pinnacle Asian handicap home team odds,TRUE
+PAHA,Pinnacle Asian handicap away team odds,TRUE
+MaxAHH,Market maximum Asian handicap home team odds,TRUE
+MaxAHA,Market maximum Asian handicap away team odds,TRUE
+AvgAHH,Market average Asian handicap home team odds,TRUE
+AvgAHA,Market average Asian handicap away team odds,TRUE
