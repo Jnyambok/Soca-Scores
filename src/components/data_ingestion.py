@@ -18,6 +18,7 @@ class DataIngestionConfig:
     ingested_dir = data_dir / "ingested_data"
     csv_file = common_data_dir / "english_league_data_urls.csv"
 
+
 # ===== DATA SOURCE IDENTIFICATION =====#
 class DataIngestion:
     def __init__(self):

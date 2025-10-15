@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Data Dictionary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #1e40af; /* Darker blue */
+            color: white;
+            cursor: pointer;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        tr:hover {
+            background-color: #f0f4ff; /* Light blue on hover */
+        }
+        .filter-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .tag-true {
+            background-color: #d1fae5; /* Green light */
+            color: #065f46; /* Green dark */
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .tag-false {
+            background-color: #fee2e2; /* Red light */
+            color: #991b1b; /* Red dark */
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        /* Custom scrollbar for better appearance */
+        .table-wrapper {
+            max-height: 70vh; /* Limit height for scrollability */
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        // Data extracted from the data_dictionary.md Canvas
+        const data = [
+            { "Column Name": "Div", "Column Description": "League Division", "Betting Odd": "False" },
+            { "Column Name": "Date", "Column Description": "Match Date (dd/mm/yy)", "Betting Odd": "False" },
+            { "Column Name": "Time", "Column Description": "Time of match kick off", "Betting Odd": "False" },
+            { "Column Name": "HomeTeam", "Column Description": "Home Team", "Betting Odd": "False" },
+            { "Column Name": "AwayTeam", "Column Description": "Away Team", "Betting Odd": "False" },
+            { "Column Name": "FTHG / HG", "Column Description": "Full Time Home Team Goals", "Betting Odd": "False" },
+            { "Column Name": "FTAG / AG", "Column Description": "Full Time Away Team Goals", "Betting Odd": "False" },
+            { "Column Name": "FTR / Res", "Column Description": "Full Time Result (H=Home Win, D=Draw, A=Away Win)", "Betting Odd": "False" },
+            { "Column Name": "HTHG", "Column Description": "Half Time Home Team Goals", "Betting Odd": "False" },
+            { "Column Name": "HTAG", "Column Description": "Half Time Away Team Goals", "Betting Odd": "False" },
+            { "Column Name": "HTR", "Column Description": "Half Time Result (H=Home Win, D=Draw, A=Away Win)", "Betting Odd": "False" },
+            { "Column Name": "Referee", "Column Description": "Match Referee", "Betting Odd": "False" },
+            { "Column Name": "HS", "Column Description": "Home Team Shots", "Betting Odd": "False" },
+            { "Column Name": "AS", "Column Description": "Away Team Shots", "Betting Odd": "False" },
+            { "Column Name": "HST", "Column Description": "Home Team Shots on Target", "Betting Odd": "False" },
+            { "Column Name": "AST", "Column Description": "Away Team Shots on Target", "Betting Odd": "False" },
+            { "Column Name": "HHW", "Column Description": "Home Team Hit Woodwork", "Betting Odd": "False" },
+            { "Column Name": "AHW", "Column Description": "Away Team Hit Woodwork", "Betting Odd": "False" },
+            { "Column Name": "HC", "Column Description": "Home Team Corners", "Betting Odd": "False" },
+            { "Column Name": "AC", "Column Description": "Away Team Corners", "Betting Odd": "False" },
+            { "Column Name": "HF", "Column Description": "Home Team Fouls Committed", "Betting Odd": "False" },
+            { "Column Name": "AF", "Column Description": "Away Team Fouls Committed", "Betting Odd": "False" },
+            { "Column Name": "HFKC", "Column Description": "Home Team Free Kicks Conceded", "Betting Odd": "False" },
+            { "Column Name": "AFKC", "Column Description": "Away Team Free Kicks Conceded", "Betting Odd": "False" },
+            { "Column Name": "HO", "Column Description": "Home Team Offsides", "Betting Odd": "False" },
+            { "Column Name": "AO", "Column Description": "Away Team Offsides", "Betting Odd": "False" },
+            { "Column Name": "HY", "Column Description": "Home Team Yellow Cards", "Betting Odd": "False" },
+            { "Column Name": "AY", "Column Description": "Away Team Yellow Cards", "Betting Odd": "False" },
+            { "Column Name": "HR", "Column Description": "Home Team Red Cards", "Betting Odd": "False" },
+            { "Column Name": "AR", "Column Description": "Away Team Red Cards", "Betting Odd": "False" },
+            { "Column Name": "HBP", "Column Description": "Home Team Bookings Points (10 = yellow, 25 = red)", "Betting Odd": "False" },
+            { "Column Name": "ABP", "Column Description": "Away Team Bookings Points (10 = yellow, 25 = red)", "Betting Odd": "False" },
+            { "Column Name": "1XBH", "Column Description": "1XBet home win odds", "Betting Odd": "True" },
+            { "Column Name": "1XBD", "Column Description": "1XBet draw odds", "Betting Odd": "True" },
+            { "Column Name": "1XBA", "Column Description": "1XBet away win odds", "Betting Odd": "True" },
+            { "Column Name": "B365H", "Column Description": "Bet365 home win odds", "Betting Odd": "True" },
+            { "Column Name": "B365D", "Column Description": "Bet365 draw odds", "Betting Odd": "True" },
+            { "Column Name": "B365A", "Column Description": "Bet365 away win odds", "Betting Odd": "True" },
+            { "Column Name": "BFH", "Column Description": "Betfair home win odds", "Betting Odd": "True" },
+            { "Column Name": "BFD", "Column Description": "Betfair draw odds", "Betting Odd": "True" },
+            { "Column Name": "BFA", "Column Description": "Betfair away win odds", "Betting Odd": "True" },
+            { "Column Name": "BFDH", "Column Description": "Betfred home win odds", "Betting Odd": "True" },
+            { "Column Name": "BFDD", "Column Description": "Betfred draw odds", "Betting Odd": "True" },
+            { "Column Name": "BFDA", "Column Description": "Betfred away win odds", "Betting Odd": "True" },
+            { "Column Name": "BMGMH", "Column Description": "BetMGM home win odds", "Betting Odd": "True" },
+            { "Column Name": "BMGMD", "Column Description": "BetMGM draw odds", "Betting Odd": "True" },
+            { "Column Name": "BMGMA", "Column Description": "BetMGM away win odds", "Betting Odd": "True" },
+            { "Column Name": "BVH", "Column Description": "Betvictor home win odds", "Betting Odd": "True" },
+            { "Column Name": "BVD", "Column Description": "Betvictor draw odds", "Betting Odd": "True" },
+            { "Column Name": "BVA", "Column Description": "Betvictor away win odds", "Betting Odd": "True" },
+            { "Column Name": "BSH", "Column Description": "Blue Square home win odds", "Betting Odd": "True" },
+            { "Column Name": "BSD", "Column Description": "Blue Square draw odds", "Betting Odd": "True" },
+            { "Column Name": "BSA", "Column Description": "Blue Square away win odds", "Betting Odd": "True" },
+            { "Column Name": "BWH", "Column Description": "Bet&Win home win odds", "Betting Odd": "True" },
+            { "Column Name": "BWD", "Column Description": "Bet&Win draw odds", "Betting Odd": "True" },
+            { "Column Name": "BWA", "Column Description": "Bet&Win away win odds", "Betting Odd": "True" },
+            { "Column Name": "CLH", "Column Description": "Coral home win odds", "Betting Odd": "True" },
+            { "Column Name": "CLD", "Column Description": "Coral draw odds", "Betting Odd": "True" },
+            { "Column Name": "CLA", "Column Description": "Coral away win odds", "Betting Odd": "True" },
+            { "Column Name": "GBH", "Column Description": "Gamebookers home win odds", "Betting Odd": "True" },
+            { "Column Name": "GBD", "Column Description": "Gamebookers draw odds", "Betting Odd": "True" },
+            { "Column Name": "GBA", "Column Description": "Gamebookers away win odds", "Betting Odd": "True" },
+            { "Column Name": "IWH", "Column Description": "Interwetten home win odds", "Betting Odd": "True" },
+            { "Column Name": "IWD", "Column Description": "Interwetten draw odds", "Betting Odd": "True" },
+            { "Column Name": "IWA", "Column Description": "Interwetten away win odds", "Betting Odd": "True" },
+            { "Column Name": "LBH", "Column Description": "Ladbrokes home win odds", "Betting Odd": "True" },
+            { "Column Name": "LBD", "Column Description": "Ladbrokes draw odds", "Betting Odd": "True" },
+            { "Column Name": "LBA", "Column Description": "Ladbrokes away win odds", "Betting Odd": "True" },
+            { "Column Name": "PSH / PH", "Column Description": "Pinnacle home win odds", "Betting Odd": "True" },
+            { "Column Name": "PSD / PD", "Column Description": "Pinnacle draw odds", "Betting Odd": "True" },
+            { "Column Name": "PSA / PA", "Column Description": "Pinnacle away win odds", "Betting Odd": "True" },
+            { "Column Name": "SOH", "Column Description": "Sporting Odds home win odds", "Betting Odd": "True" },
+            { "Column Name": "SOD", "Column Description": "Sporting Odds draw odds", "Betting Odd": "True" },
+            { "Column Name": "SOA", "Column Description": "Sporting Odds away win odds", "Betting Odd": "True" },
+            { "Column Name": "SBH", "Column Description": "Sportingbet home win odds", "Betting Odd": "True" },
+            { "Column Name": "SBD", "Column Description": "Sportingbet draw odds", "Betting Odd": "True" },
+            { "Column Name": "SBA", "Column Description": "Sportingbet away win odds", "Betting Odd": "True" },
+            { "Column Name": "SJH", "Column Description": "Stan James home win odds", "Betting Odd": "True" },
+            { "Column Name": "SJD", "Column Description": "Stan James draw odds", "Betting Odd": "True" },
+            { "Column Name": "SJA", "Column Description": "Stan James away win odds", "Betting Odd": "True" },
+            { "Column Name": "SYH", "Column Description": "Stanleybet home win odds", "Betting Odd": "True" },
+            { "Column Name": "SYD", "Column Description": "Stanleybet draw odds", "Betting Odd": "True" },
+            { "Column Name": "SYA", "Column Description": "Stanleybet away win odds", "Betting Odd": "True" },
+            { "Column Name": "VCH", "Column Description": "VC Bet home win odds (now BetVictor, see above)", "Betting Odd": "True" },
+            { "Column Name": "VCD", "Column Description": "VC Bet draw odds (now BetVictor, see above)", "Betting Odd": "True" },
+            { "Column Name": "VCA", "Column Description": "VC Bet away win odds (now BetVictor, see above)", "Betting Odd": "True" },
+            { "Column Name": "WHH", "Column Description": "William Hill home win odds", "Betting Odd": "True" },
+            { "Column Name": "WHD", "Column Description": "William Hill draw odds", "Betting Odd": "True" },
+            { "Column Name": "WHA", "Column Description": "William Hill away win odds", "Betting Odd": "True" },
+            { "Column Name": "Bb1X2", "Column Description": "Number of BetBrain bookmakers used to calculate match odds averages and maximums", "Betting Odd": "True" },
+            { "Column Name": "BbMxH", "Column Description": "Betbrain maximum home win odds", "Betting Odd": "True" },
+            { "Column Name": "BbAvH", "Column Description": "Betbrain average home win odds", "Betting Odd": "True" },
+            { "Column Name": "BbMxD", "Column Description": "Betbrain maximum draw odds", "Betting Odd": "True" },
+            { "Column Name": "BbAvD", "Column Description": "Betbrain average draw win odds", "Betting Odd": "True" },
+            { "Column Name": "BbMxA", "Column Description": "Betbrain maximum away win odds", "Betting Odd": "True" },
+            { "Column Name": "BbAvA", "Column Description": "Betbrain average away win odds", "Betting Odd": "True" },
+            { "Column Name": "MaxH", "Column Description": "Market maximum home win odds", "Betting Odd": "True" },
+            { "Column Name": "MaxD", "Column Description": "Market maximum draw win odds", "Betting Odd": "True" },
+            { "Column Name": "MaxA", "Column Description": "Market maximum away win odds", "Betting Odd": "True" },
+            { "Column Name": "AvgH", "Column Description": "Market average home win odds", "Betting Odd": "True" },
+            { "Column Name": "AvgD", "Column Description": "Market average draw win odds", "Betting Odd": "True" },
+            { "Column Name": "AvgA", "Column Description": "Market average away win odds", "Betting Odd": "True" },
+            { "Column Name": "BFEH", "Column Description": "Betfair Exchange home win odds", "Betting Odd": "True" },
+            { "Column Name": "BFED", "Column Description": "Betfair Exchange draw odds", "Betting Odd": "True" },
+            { "Column Name": "BFEA", "Column Description": "Betfair Exchange away win odds", "Betting Odd": "True" },
+            { "Column Name": "BbOU", "Column Description": "Number of BetBrain bookmakers used to calculate over/under 2.5 goals (total goals) averages and maximums", "Betting Odd": "True" },
+            { "Column Name": "BbMx>2.5", "Column Description": "Betbrain maximum over 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "BbAv>2.5", "Column Description": "Betbrain average over 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "BbMx<2.5", "Column Description": "Betbrain maximum under 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "BbAv<2.5", "Column Description": "Betbrain average under 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "GB>2.5", "Column Description": "Gamebookers over 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "GB<2.5", "Column Description": "Gamebookers under 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "B365>2.5", "Column Description": "Bet365 over 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "B365<2.5", "Column Description": "Bet365 under 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "P>2.5", "Column Description": "Pinnacle over 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "P<2.5", "Column Description": "Pinnacle under 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "Max>2.5", "Column Description": "Market maximum over 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "Max<2.5", "Column Description": "Market maximum under 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "Avg>2.5", "Column Description": "Market average over 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "Avg<2.5", "Column Description": "Market average under 2.5 goals", "Betting Odd": "True" },
+            { "Column Name": "BbAH", "Column Description": "Number of BetBrain bookmakers used to Asian handicap averages and maximums", "Betting Odd": "True" },
+            { "Column Name": "BbAHh", "Column Description": "Betbrain size of handicap (home team)", "Betting Odd": "True" },
+            { "Column Name": "AHh", "Column Description": "Market size of handicap (home team) (since 2019/2020)", "Betting Odd": "True" },
+            { "Column Name": "BbMxAHH", "Column Description": "Betbrain maximum Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "BbAvAHH", "Column Description": "Betbrain average Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "BbMxAHA", "Column Description": "Betbrain maximum Asian handicap away team odds", "Betting Odd": "True" },
+            { "Column Name": "BbAvAHA", "Column Description": "Betbrain average Asian handicap away team odds", "Betting Odd": "True" },
+            { "Column Name": "GBAHH", "Column Description": "Gamebookers Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "GBAHA", "Column Description": "Gamebookers Asian handicap away team odds", "Betting Odd": "True" },
+            { "Column Name": "GBAH", "Column Description": "Gamebookers size of handicap (home team)", "Betting Odd": "True" },
+            { "Column Name": "LBAHH", "Column Description": "Ladbrokes Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "LBAHA", "Column Description": "Ladbrokes Asian handicap away team odds", "Betting Odd": "True" },
+            { "Column Name": "LBAH", "Column Description": "Ladbrokes size of handicap (home team)", "Betting Odd": "True" },
+            { "Column Name": "B365AHH", "Column Description": "Bet365 Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "B365AHA", "Column Description": "Bet365 Asian handicap away team odds", "Betting Odd": "True" },
+            { "Column Name": "B365AH", "Column Description": "Bet365 size of handicap (home team)", "Betting Odd": "True" },
+            { "Column Name": "PAHH", "Column Description": "Pinnacle Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "PAHA", "Column Description": "Pinnacle Asian handicap away team odds", "Betting Odd": "True" },
+            { "Column Name": "MaxAHH", "Column Description": "Market maximum Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "MaxAHA", "Column Description": "Market maximum Asian handicap away team odds", "Betting Odd": "True" },
+            { "Column Name": "AvgAHH", "Column Description": "Market average Asian handicap home team odds", "Betting Odd": "True" },
+            { "Column Name": "AvgAHA", "Column Description": "Market average Asian handicap away team odds", "Betting Odd": "True" }
+        ];
+
+        let sortDirection = {};
+
+        function renderTable(filteredData = data) {
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = '';
+
+            filteredData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="font-mono text-sm">${row['Column Name']}</td>
+                    <td>${row['Column Description']}</td>
+                    <td>
+                        <span class="${row['Betting Odd'] === 'True' ? 'tag-true' : 'tag-false'}">
+                            ${row['Betting Odd']}
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function sortTable(columnIndex) {
+            const keys = ['Column Name', 'Column Description', 'Betting Odd'];
+            const key = keys[columnIndex];
+
+            let direction = sortDirection[key] === 'asc' ? 'desc' : 'asc';
+            sortDirection = {};
+            sortDirection[key] = direction;
+
+            data.sort((a, b) => {
+                const aVal = String(a[key]).toLowerCase();
+                const bVal = String(b[key]).toLowerCase();
+
+                if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderTable(data);
+            updateHeaders(key, direction);
+        }
+
+        function updateHeaders(key, direction) {
+            const headers = document.querySelectorAll('#data-table-head th');
+            headers.forEach(th => {
+                const headerKey = th.getAttribute('data-key');
+                th.innerHTML = th.getAttribute('data-original-text');
+                if (headerKey === key) {
+                    th.innerHTML += direction === 'asc' ? ' &uarr;' : ' &darr;';
+                }
+            });
+        }
+
+        function filterTable() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = data.filter(row => {
+                return (
+                    String(row['Column Name']).toLowerCase().includes(query) ||
+                    String(row['Column Description']).toLowerCase().includes(query) ||
+                    String(row['Betting Odd']).toLowerCase().includes(query)
+                );
+            });
+            renderTable(filtered);
+        }
+
+        window.onload = function() {
+            renderTable();
+            document.getElementById('search-input').addEventListener('keyup', filterTable);
+
+            // Set up sorting listeners
+            const headers = document.querySelectorAll('#data-table-head th');
+            headers.forEach((th, index) => {
+                th.setAttribute('data-original-text', th.innerText);
+                th.setAttribute('data-key', ['Column Name', 'Column Description', 'Betting Odd'][index]);
+                th.addEventListener('click', () => sortTable(index));
+            });
+        };
+    </script>
+
+    <div class="container">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Football Data Dictionary</h1>
+
+        <input type="text" id="search-input" placeholder="Filter by Column Name, Description, or Betting Odd..." class="filter-input focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+
+        <div class="table-wrapper">
+            <table>
+                <thead id="data-table-head">
+                    <tr>
+                        <th onclick="sortTable(0)">Column Name</th>
+                        <th onclick="sortTable(1)">Column Description</th>
+                        <th onclick="sortTable(2)">Betting Odd</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body">
+                    <!-- Data will be injected here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <p class="text-xs text-gray-500 mt-4">Click on column headers to sort the data.</p>
+    </div>
+
+</body>
+</html>
+
