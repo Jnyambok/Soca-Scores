@@ -26,24 +26,54 @@ class DataCleaning:
     
 
     def filter_data_by_non_betting_features(self):
-        print("Stage 1: Filtering feature catalog to exclude Betting_odd=True features.")
+        print("Data Cleaning: Step 1: Filtering feature catalog to exclude Betting_odd=True features.......")
+        logging.info("Entering the Filtering out the non betting features module.....")
         
         # Load the CSV files first
         feature_catalog_df = pd.read_csv(self.ingestion_config.feature_catalog_csv_file)
         enhanced_data_df = pd.read_csv(self.ingestion_config.ingested_csv_file,low_memory=False)
         
         # Now filter
-        feature_catalog_filtered = feature_catalog_df[feature_catalog_df["Betting_odd"]==False].copy()
+        # Had to Convert the False to avoid the boolean confusion brought about by Singleton Comparison
+        is_not_betting_odd = feature_catalog_df['Betting_odd'].astype(str).str.lower().isin(['false'])
+        feature_catalog_filtered = feature_catalog_df[is_not_betting_odd].copy()
         feature_names_to_keep = feature_catalog_filtered['Feature_name'].unique()
         enhanced_data = enhanced_data_df.loc[:, enhanced_data_df.columns.isin(feature_names_to_keep)].copy()
-        
-        return print(enhanced_data.columns)
+
+
+        columns_retained = enhanced_data.columns
+        logging.info(f" Here are the retained columns after removing betting odds : {columns_retained}")
+        logging.info(f"The new number of columns are {enhanced_data.shape[1]} and the new number of the rows are {enhanced_data.shape[0]}" )
+        return enhanced_data
+    
+
+    def removing_columns_missing_significant_chunks(self,enhanced_data):
+        print("Data Cleaning:Step 2: Removing columns missing significant chunks on it.......")
+        try:
+            total = enhanced_data.isnull().sum().sort_values(ascending=False)
+            missing_percent = (enhanced_data.isnull().sum() / len(enhanced_data)) * 100
+            missing_data = pd.concat([total,missing_percent],axis=1, keys=['Total','Percent'])
+            logging.info(f"These are the columns that are missing{missing_data.head(20)}")
+            #Deleting the columns
+            columns_to_drop = missing_percent[missing_percent > 10].index
+            enhanced_data_with_no_nulls = enhanced_data.drop(columns=columns_to_drop).copy()
+            print(f"Dropped {len(columns_to_drop)} columns.")
+            logging.info(f"Dropped {len(columns_to_drop)} columns.")
+            print(f"Dropped {columns_to_drop} columns.")
+            logging.info(f"Dropped {columns_to_drop} columns.")
+            logging.info(f"{enhanced_data_with_no_nulls.head()}")
+        except Exception as e:
+            raise CustomException(e,sys) from e
+        print("Data Cleaning:Step 2: Removing columns missing significant chunks on it✅")
+        return enhanced_data_with_no_nulls
+
 
 
 
 if __name__ == "__main__":
     obj = DataCleaning()
-    cleaned = obj.filter_data_by_non_betting_features()
+    enhanced_data = obj.filter_data_by_non_betting_features()
+    enhanced_data_with_no_nulls = obj.removing_columns_missing_significant_chunks(enhanced_data)
     
 
 
