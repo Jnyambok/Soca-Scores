@@ -66,6 +66,38 @@ class DataCleaning:
             raise CustomException(e,sys) from e
         print("Data Cleaning:Step 2: Removing columns missing significant chunks on it✅")
         return enhanced_data_with_no_nulls
+    
+
+    def declare_dtypes_early(self,enhanced_data_with_no_nulls):
+        print("Data Cleaning:Step 3: Enforcing data types.......")
+        try:
+            logging.info("Enforcing and Augmenting Date Data types")
+            enhanced_data_with_no_nulls['Date'] = pd.to_datetime(enhanced_data_with_no_nulls['Date'],format = 'mixed')
+            enhanced_data_with_no_nulls['Month'] = enhanced_data_with_no_nulls['Date'].dt.strftime('%B')
+            enhanced_data_with_no_nulls['Year'] = enhanced_data_with_no_nulls['Date'].dt.year
+            enhanced_data_with_no_nulls['Day'] = enhanced_data_with_no_nulls['Date'].dt.strftime('%A')
+            logging.info(f"Augmented date types : {enhanced_data_with_no_nulls.sample(10)}")
+
+            # == Fixing String Columns == #
+            logging.info("Enforcing string columns to avoid edge cases....")
+            string_cols = ['HomeTeam', 'AwayTeam', 'FTR', 'HTR', 'Referee', 'Month', 'Day'] 
+            str_map = ({col: str for col in string_cols})
+            enhanced_data_with_no_nulls = enhanced_data_with_no_nulls.astype(str_map) 
+            logging.info(f"Here are the data types: {enhanced_data_with_no_nulls.dtypes}")
+
+            # == Fixing Numeric Columns == #
+            logging.info("Enforcing numeric columns......")
+            num_cols = ['FTHG', 'FTAG', 'HTHG', 'HTAG', 'HS', 'HS', 'HST', 'AST', 'HF', 'AF', 'HC', 'AC', 'HY', 'AY', 'HR', 'AR','Year']
+            num_map = ({num: 'Int64' for num in num_cols})
+            enhanced_data_with_no_nulls = enhanced_data_with_no_nulls.astype(num_map)
+            logging.info(f"Here are the data types: {enhanced_data_with_no_nulls.dtypes}")
+        except Exception as e:
+            raise CustomException(e,sys) from e
+        print("Data Cleaning:Step 3: Enforcing data types.......✅")
+        logging.info("Data Cleaning:Step 3: Enforcing data types.......✅")
+        return enhanced_data_with_no_nulls
+
+
 
 
 
@@ -74,6 +106,8 @@ if __name__ == "__main__":
     obj = DataCleaning()
     enhanced_data = obj.filter_data_by_non_betting_features()
     enhanced_data_with_no_nulls = obj.removing_columns_missing_significant_chunks(enhanced_data)
+    enhanced_data_with_no_nulls = obj.declare_dtypes_early(enhanced_data_with_no_nulls)
+
     
 
 
