@@ -1,4 +1,10 @@
 #==== Let's ingest the data ===== #
+"""
+Module for ingesting the premier league data, doing initial cleaning and loading it into Neon Serverless DB
+
+"""
+
+
 
 import sys
 import pandas as pd
@@ -8,6 +14,7 @@ from src.exception import CustomException
 from src.logger import logging
 
 from dataclasses import dataclass
+
 
 
 @dataclass
