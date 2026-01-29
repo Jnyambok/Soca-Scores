@@ -13,6 +13,7 @@ Module for cleaning the English Premier League Data and ingesting it into the Ne
 import sys
 from pathlib import Path
 from dataclasses import dataclass
+from typing import List
 
 #Third Party imports
 import pandas as pd
@@ -44,6 +45,8 @@ class DataCleaningConfig:
     csv_file: Path = None
     feature_catalog:Path = None
 
+    CRITICAL_COLUMNS: List[str] = ('HomeTeam', 'AwayTeam', 'Date', 'FTHG', 'FTAG')
+
     def __post_init__(self) -> None:
         """
         Initialize computed attributes after dataclass initialization.
@@ -74,8 +77,7 @@ class DataCleaning:
        
         :param self: Description
         """
-        self.cleaning_config = DataCleaningConfig()
-   
+        self.cleaning_config = DataCleaningConfig()  
     def remove_betting_features(self) -> pd.DataFrame:
         """
         Step 1: Removing unnecessary betting features
@@ -86,7 +88,8 @@ class DataCleaning:
         """
         try:
             print("Data Cleaning: Step 1: Filtering feature catalog to exclude Betting_odd=True features.......")
-            logging.info("Starting the deletion of betting features.....")
+            logging.info("======================================================")
+            logging.info("Data Cleaning Step 1: Starting the deletion of betting features.....")
 
             #Loading the CSV files
             catalog = pd.read_csv(self.cleaning_config.feature_catalog)
@@ -101,12 +104,65 @@ class DataCleaning:
             columns_retained = enhanced_data.columns
             logging.info(f" Here are the retained columns after removing betting odds : {columns_retained}")
             logging.info(f"The new number of columns are {enhanced_data.shape[1]} and the new number of the rows are {enhanced_data.shape[0]}" )
+            logging.info("Data Cleaning Step 1: Betting features succcessfully deleted. STEP COMPLETED")
+            logging.info("===============================================================")
+            print("Data Cleaning: Step 1: Betting features have been deleted...STEP 1 COMPLETED")
             return enhanced_data
-
         except Exception as e:
             raise CustomException(e,sys) from e
+    
+    def handle_missing_data(self, enhanced_data:pd.DataFrame, threshold:float=10.0)-> pd.DataFrame:
+        """
+        Step 2: Handling missing data
+        Removes rows that are missing a significant chunk
+        :params : self, enhanced_data, threshold value -> value to ensure
+        :rtype:  enhanced_data Dataframe -> Missing data has been handled
+
+        """
+        try:
+            print("Data Cleaning: Step 2: Handling data features missing significant chunks of volume.......")
+            logging.info("======================================================")
+            logging.info("Data Cleaning Step 2: Handling of missing features.....")
+
+            #Dropping columns with > threshold missing
+            total = enhanced_data.isnull().sum().sort_values(ascending=False)
+            missing_percent = (enhanced_data.isnull().sum() / len(enhanced_data)) * 100
+            missing_data = pd.concat([total,missing_percent],axis=1, keys=['Total','Percent'])
+            logging.info(f"These are the columns that are missing{missing_data.head(20)}")
+
+            cols_to_drop = missing_percent[missing_percent>threshold].index
+            enhanced_data = enhanced_data.drop(columns=cols_to_drop)
+            print(f"Dropped {len(cols_to_drop)} columns.")
+            logging.info(f"Dropped {len(cols_to_drop)} columns.")
+            print(f"Dropped {cols_to_drop} columns.")
+            logging.info(f"Dropped {cols_to_drop} columns.")
+            logging.info(f"{enhanced_data.head()}")
+
+            #Handling Nullable types
+            enhanced_data_with_no_nulls = enhanced_data.dropna(subset=list(self.cleaning_config.CRITICAL_COLUMNS))
+            logging.info(f"Original shape: {enhanced_data.shape}")
+            logging.info(f"New shape: {enhanced_data_with_no_nulls.shape}")           
+
+
+            logging.info("Data Cleaning Step 2: Data missing significant chunk of data and nulls handled. STEP COMPLETED")
+            logging.info("===============================================================")
+            #return enhanced_data
+            #print("Data Cleaning: Step 3: Data missing significant chunk of data handled...STEP 2 COMPLETED")
+       
+        except Exception as e:
+            raise CustomException(e,sys) from e
+        print("Data Cleaning: Step 3: Data missing significant chunk of data handled...STEP 2 COMPLETED")
+        return enhanced_data_with_no_nulls
+    
+    def declare_dtypes_early(self,enhanced_data_with_no_nulls:pd)
+
+
+
+
+
 
 
 if __name__ == "__main__":
     obj = DataCleaning()
     enhanced = obj.remove_betting_features()
+    enhanced_no_nulls = obj.handle_missing_data(enhanced)
