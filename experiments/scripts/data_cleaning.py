@@ -45,7 +45,9 @@ class DataCleaningConfig:
     csv_file: Path = None
     feature_catalog:Path = None
 
-    CRITICAL_COLUMNS: List[str] = ('HomeTeam', 'AwayTeam', 'Date', 'FTHG', 'FTAG')
+    critical_columns: List[str] = ('HomeTeam', 'AwayTeam', 'Date', 'FTHG', 'FTAG')
+    string_columns: List[str] = ('HomeTeam', 'AwayTeam', 'FTR', 'HTR', 'Referee', 'Month', 'Day')
+    numeric_columns: List[str] = ('FTHG', 'FTAG', 'HTHG', 'HTAG', 'HS', 'HST', 'AST','HF', 'AF', 'HC', 'AC', 'HY', 'AY', 'HR', 'AR', 'Year')
 
     def __post_init__(self) -> None:
         """
@@ -139,7 +141,7 @@ class DataCleaning:
             logging.info(f"{enhanced_data.head()}")
 
             #Handling Nullable types
-            enhanced_data_with_no_nulls = enhanced_data.dropna(subset=list(self.cleaning_config.CRITICAL_COLUMNS))
+            enhanced_data_with_no_nulls = enhanced_data.dropna(subset=list(self.cleaning_config.critical_columns))
             logging.info(f"Original shape: {enhanced_data.shape}")
             logging.info(f"New shape: {enhanced_data_with_no_nulls.shape}")           
 
@@ -151,12 +153,48 @@ class DataCleaning:
        
         except Exception as e:
             raise CustomException(e,sys) from e
-        print("Data Cleaning: Step 3: Data missing significant chunk of data handled...STEP 2 COMPLETED")
+        print("Data Cleaning: Step 2: Data missing significant chunk of data handled...STEP 2 COMPLETED")
         return enhanced_data_with_no_nulls
     
-    def declare_dtypes_early(self,enhanced_data_with_no_nulls:pd)
+    def declare_dtypes_early(self,enhanced_data_with_no_nulls:pd.DataFrame)->pd.DataFrame:  #Not a pure function but falls in "standardization"
+        """
+        Step 3: Standardizing data types and augments data features
+        :params -> Enhanced_data_with_no_nulls
+        :rtyps -> standardized_data_with_no_nulls
 
+        """
+        try:
+            print("Data Cleaning: Step 3: Standardizing data types and augmenting date features.......")
+            logging.info("======================================================")
+            logging.info("Data Cleaning Step 3: Standardizing data types.....")
 
+            #Standardizing - Handling date types and augmenting them
+            enhanced_data_with_no_nulls['Date'] = pd.to_datetime(enhanced_data_with_no_nulls['Date'],format = 'mixed')
+            enhanced_data_with_no_nulls['Month'] = enhanced_data_with_no_nulls['Date'].dt.strftime('%B')
+            enhanced_data_with_no_nulls['Year'] = enhanced_data_with_no_nulls['Date'].dt.year
+            enhanced_data_with_no_nulls['Day'] = enhanced_data_with_no_nulls['Date'].dt.strftime('%A')
+            logging.info(f"Augmented date types : {enhanced_data_with_no_nulls.sample(10)}")
+
+            #Standardizing - vectorized type conversion
+            logging.info("Standardizing String Columns")
+            for col in self.cleaning_config.string_columns:
+                if col in enhanced_data_with_no_nulls.columns:
+                    enhanced_data_with_no_nulls[col] = enhanced_data_with_no_nulls[col].astype(str).str.strip()
+            
+            #Standardizing - numeric columns
+            logging.info("Standarding Numeric Columns")
+            for col in self.cleaning_config.numeric_columns:
+                if col in enhanced_data_with_no_nulls.columns:
+                    enhanced_data_with_no_nulls[col] = pd.to_numeric(
+                        enhanced_data_with_no_nulls[col],errors="coerce").astype("Int64")
+            logging.info("======================================================")
+            logging.info("Data Cleaning Step 3: Standardized data types handled. STEP COMPLETED")
+            
+            return enhanced_data_with_no_nulls
+        
+        except Exception as e:
+            raise CustomException(e,sys) from e
+        
 
 
 
@@ -166,3 +204,4 @@ if __name__ == "__main__":
     obj = DataCleaning()
     enhanced = obj.remove_betting_features()
     enhanced_no_nulls = obj.handle_missing_data(enhanced)
+    standardized_no_nulls = obj.declare_dtypes_early(enhanced_no_nulls)
