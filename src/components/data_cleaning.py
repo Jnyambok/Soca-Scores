@@ -215,7 +215,7 @@ class DataCleaning:
         logging.info("Data Cleaning: Step 4: Saving the cleaned file.......")
         try:
             output_dir = self.cleaning_config.cleaned_ingested_dir
-            output_dir.parent.mkdir(exist_ok=True)
+            output_dir.mkdir(parents=True,exist_ok=True)
             output_file = output_dir/"cleaned_ingested_data.csv"
             enhanced_data_with_no_nulls.to_csv(output_file,index=False)
             logging.info(f"Cleaned Ingested Dataset saved to: {output_file}")
