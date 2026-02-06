@@ -5,9 +5,7 @@ Module for cleaning the English Premier League Data and ingesting it into the Ne
 
 """
 
-#Used when PEP8 import order is not respected
-#(standard imports first, then third-party libraries,
-#then local imports).
+
 
 #Standard imports
 import sys

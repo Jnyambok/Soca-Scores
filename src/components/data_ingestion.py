@@ -41,7 +41,9 @@ class DataIngestion:
                 urls = pd.read_csv(self.ingestion_config.csv_file)
                 logging.info(f'File has been loaded successfully. The url dataset has {urls.shape[0]} rows and {urls.shape[1]} columns')
             else:
-                logging.info(f"File not found: {self.ingestion_config.csv_file}")
+                msg = f"CSV file not found at {self.ingestion_config.csv_file}"
+                logging.error(msg)
+                raise CustomException(msg, sys)
         except Exception as e:
             raise CustomException(e, sys) from e
         print("Step 1 complete: Data Source has been identified!")
@@ -95,10 +97,10 @@ class DataIngestion:
         print("Saving the concatenated datasets.......")
         try:
             output_dir = self.ingestion_config.ingested_dir
-            output_dir.parent.mkdir(exist_ok=True)
-            output_file = output_dir/ "enhanced_dataset.csv"
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = output_dir / "enhanced_dataset.csv"
 
-            final_df.to_csv(output_file,index=False)
+            final_df.to_csv(output_file, index=False)
             logging.info(f"Enhanced Dataset saved to: {output_file}")
         except Exception as e:
             raise CustomException(e,sys) from e
