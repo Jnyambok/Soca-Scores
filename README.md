@@ -5,6 +5,7 @@
 
 ## First Article in the Series : [ Phase 0: Setting up the Development Environment](https://medium.com/p/1960fb160e30)
 ## Second Article in the Series :[ Phase 1: Data Ingestion](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-c9c1d4f83187)
+## Third Article in the Series :[ Phase 2: Data Cleaning and Transformation](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-8760a79ddfe1)
 
 [Data Project Structure Best Practices](https://medium.com/the-pythonworld/best-practices-for-structuring-a-python-project-like-a-pro-be6013821168)
 
