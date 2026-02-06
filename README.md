@@ -142,20 +142,28 @@ premier_league_predictions/
 Directory structure:
 └── jnyambok-soca-scores/
     ├── README.md
+    ├── data_dictionary_spreadsheet.html  #Added a html page for the data_dictionary
     ├── requirements.txt
+    ├── logs/
     ├── datasets/
     │   └── common_data/
-    │       └── english_league_data_urls.csv
+    │       ├── english_league_data_urls.csv
+    │       └── feature_catalog.csv
     ├── experiments/
-    │   └── notebooks/
-    │       └── data_ingestion.ipynb
+    │   ├── notebooks/
+    │   │   └── data_ingestion.ipynb
+    │   └── scripts/             #Added a scripts environ to test scripts
+    │       └── data_cleaning.py
     └── src/
         ├── __init__.py
         ├── exception.py
         ├── logger.py
         └── components/
             ├── __init__.py
-            └── data_ingestion.py
+            ├── data_cleaning.py       #Added a script for cleaning the data before the database
+            ├── data_ingestion.py    
+            └── database_scripts/
+                └── db_creation_and_initial_insertion.py  #For the initial creation and insertion
 
 ```
 
