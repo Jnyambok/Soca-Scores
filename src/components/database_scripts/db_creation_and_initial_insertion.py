@@ -12,9 +12,11 @@ import sys
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
+from contextlib import contextmanager
 
 import pandas as pd
 import psycopg2
+from psycopg2.extras import execute_batch
 from dotenv import load_dotenv
 import os
 
@@ -92,29 +94,40 @@ class DatabaseInsertion:
         self.db_config = DatabaseConfig()
         logging.info("Database configuration initialized")
     
-    def connect(self):
+    @contextmanager
+    def get_connection(self):
         """
-        Establish database connection.
+        Context manager for database connections.
+        Ensures proper cleanup even if errors occur.
         
-        Returns:
+        Yields:
             psycopg2.connection: Database connection object
             
         Raises:
             CustomException: If connection fails
         """
+        conn = None
         try:
             conn = psycopg2.connect(self.db_config.db_connection_string)
             logging.info("✅ Database connection established")
-            return conn
+            yield conn
         except Exception as e:
+            logging.error(f"❌ Database connection failed: {e}")
             raise CustomException(e, sys) from e
+        finally:
+            if conn is not None:
+                conn.close()
+                logging.info("🔒 Database connection closed")
     
     def ensure_table_exists(self, conn) -> None:
         """
         Create table if it doesn't exist.
         
-        :param conn: Database connection
-        :raises CustomException: If table creation fails
+        Args:
+            conn: Database connection
+            
+        Raises:
+            CustomException: If table creation fails
         """
         try:
             with conn.cursor() as cur:
@@ -123,15 +136,21 @@ class DatabaseInsertion:
                 logging.info("✅ Table 'epl_data' ensured to exist")
         except Exception as e:
             conn.rollback()
+            logging.error(f"❌ Table creation failed: {e}")
             raise CustomException(e, sys) from e
    
     def prepare_data(self, data: pd.DataFrame) -> tuple[pd.DataFrame, list]:
         """
         Prepare data for insertion by renaming, reordering, and converting to tuples.
         
-        :param data: Input DataFrame
-        :return: Tuple of (cleaned DataFrame, list of tuples for insertion)
-        :raises CustomException: If data preparation fails
+        Args:
+            data: Input DataFrame
+            
+        Returns:
+            Tuple of (cleaned DataFrame, list of tuples for insertion)
+            
+        Raises:
+            CustomException: If data preparation fails
         """
         try:
             logging.info(f"Preparing data for insertion: {data.shape}")
@@ -160,17 +179,23 @@ class DatabaseInsertion:
             return data, data_to_insert
             
         except Exception as e:
+            logging.error(f"❌ Data preparation failed: {e}")
             raise CustomException(e, sys) from e
     
     def insert_data(self, conn, data: pd.DataFrame, data_tuples: list) -> int:
         """
-        Insert cleaned data into the database.
+        Insert cleaned data into the database using batch insertion.
         
-        :param conn: Database connection
-        :param data: DataFrame with column information
-        :param data_tuples: List of tuples to insert
-        :return: Number of rows inserted
-        :raises CustomException: If insertion fails
+        Args:
+            conn: Database connection
+            data: DataFrame with column information
+            data_tuples: List of tuples to insert
+            
+        Returns:
+            Number of rows inserted
+            
+        Raises:
+            CustomException: If insertion fails
         """
         try:
             with conn.cursor() as cur:
@@ -183,8 +208,8 @@ class DatabaseInsertion:
                 logging.info(f"Executing INSERT query with {len(data_tuples)} rows")
                 logging.info(f"Columns: {columns}")
                 
-                # Execute batch insertion
-                cur.executemany(insert_query, data_tuples)
+                # Use execute_batch for better performance
+                execute_batch(cur, insert_query, data_tuples, page_size=1000)
                 rows_inserted = cur.rowcount
                 
                 conn.commit()
@@ -200,12 +225,17 @@ class DatabaseInsertion:
     def load_and_insert(self, csv_file_path: str) -> int:
         """
         Complete workflow: Load CSV, prepare data, and insert into database.
+        Uses context manager to ensure proper connection handling.
         
-        :param csv_file_path: Path to cleaned CSV file
-        :return: Number of rows inserted
-        :raises CustomException: If any step fails
+        Args:
+            csv_file_path: Path to cleaned CSV file
+            
+        Returns:
+            Number of rows inserted
+            
+        Raises:
+            CustomException: If any step fails
         """
-        conn = None
         try:
             logging.info("="*60)
             logging.info("Starting Database Insertion Process")
@@ -216,16 +246,16 @@ class DatabaseInsertion:
             data = pd.read_csv(csv_file_path)
             logging.info(f"✅ Loaded {data.shape[0]} rows, {data.shape[1]} columns")
             
-            # Connect to database
-            conn = self.connect()
-            
-            # Ensure table exists
-            self.ensure_table_exists(conn)
-            # Prepare data
+            # Prepare data first (before opening connection)
             data, data_tuples = self.prepare_data(data)
             
-            # Insert data
-            rows_inserted = self.insert_data(conn, data, data_tuples)
+            # Use context manager for database operations
+            with self.get_connection() as conn:
+                # Ensure table exists
+                self.ensure_table_exists(conn)
+                
+                # Insert data
+                rows_inserted = self.insert_data(conn, data, data_tuples)
             
             logging.info("="*60)
             logging.info("✅ Database insertion completed successfully!")
@@ -237,27 +267,31 @@ class DatabaseInsertion:
         except Exception as e:
             logging.error(f"❌ Error during database insertion: {e}")
             raise CustomException(e, sys) from e
-        finally:
-            if conn:
-                conn.close()
-                logging.info("Database connection closed")
 
 
 if __name__ == "__main__":
-    # Example usage
     try:
+        logging.info("🚀 Starting database insertion script")
+        
         inserter = DatabaseInsertion()
         
         # Define path to cleaned data CSV
         PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
         CLEANED_CSV = PROJECT_ROOT / "datasets" / "cleaned_ingested_data" / "cleaned_ingested_data.csv"
         
-        if CLEANED_CSV.exists():
-            rows = inserter.load_and_insert(str(CLEANED_CSV))
-            print(f"\n✅ Successfully inserted {rows} rows into the database!")
-        else:
-            print(f"❌ CSV file not found: {CLEANED_CSV}")
-            
+        logging.info(f"Looking for CSV at: {CLEANED_CSV}")
+        
+        if not CLEANED_CSV.exists():
+            raise FileNotFoundError(f"CSV file not found: {CLEANED_CSV}")
+        
+        rows = inserter.load_and_insert(str(CLEANED_CSV))
+        print(f"\n✅ Successfully inserted {rows} rows into the database!")
+        
+    except FileNotFoundError as e:
+        logging.error(f"❌ File error: {e}")
+        print(f"❌ File error: {e}")
+        sys.exit(1)
     except Exception as e:
+        logging.error(f"❌ Unexpected error: {e}")
         print(f"❌ Error: {e}")
         sys.exit(1)
