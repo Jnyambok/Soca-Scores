@@ -63,7 +63,7 @@ class DataIngestion:
             # === Metadata collected ===#
 
             try:
-                epl_data = pd.read_csv(seasons_url)
+                epl_data = pd.read_csv(seasons_url, encoding='latin1')
                 epl_data["season_id"] = season_id
                 epl_data["competition_name"] = competition_name
                 dataframes.append(epl_data)
