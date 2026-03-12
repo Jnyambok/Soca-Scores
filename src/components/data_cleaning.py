@@ -51,7 +51,7 @@ class DataCleaningConfig:
     #raw_ingested_csv:Path = None  -> what would be the actual file
 
     critical_columns: List[str] = ('HomeTeam', 'AwayTeam', 'Date', 'FTHG', 'FTAG')
-    string_columns: List[str] = ('HomeTeam', 'AwayTeam', 'FTR', 'HTR', 'Referee', 'Month', 'Day')
+    string_columns: List[str] = ('HomeTeam', 'Season_id','AwayTeam', 'FTR', 'HTR', 'Referee', 'Month', 'Day')
     numeric_columns: List[str] = ('FTHG', 'FTAG', 'HTHG', 'HTAG', 'HS', 'HST', 'AST','HF', 'AF', 'HC', 'AC', 'HY', 'AY', 'HR', 'AR', 'Year')
 
     def __post_init__(self) -> None:
@@ -99,6 +99,7 @@ class DataCleaning:
             print("Data Cleaning: Step 1: Filtering feature catalog to exclude Betting_odd=True features.......")
             logging.info("======================================================")
             logging.info("Data Cleaning Step 1: Starting the deletion of betting features.....")
+            
 
             #Loading the CSV files
             catalog = pd.read_csv(self.cleaning_config.feature_catalog)
@@ -108,7 +109,11 @@ class DataCleaning:
             is_not_betting_feature = catalog['Betting_odd'].astype(str).str.lower().isin(['false'])
             feature_catalog_filtered = catalog[is_not_betting_feature].copy()
             feature_names_to_keep = feature_catalog_filtered['Feature_name'].unique()
-            enhanced_data = ingested_data_df.loc[:, ingested_data_df.columns.isin(feature_names_to_keep)].copy()
+            
+            # Case-insensitive column matching to handle mismatches like "Season_id" vs "season_id"
+            feature_names_lower = {name.lower(): name for name in feature_names_to_keep}
+            columns_to_keep = [col for col in ingested_data_df.columns if col.lower() in feature_names_lower]
+            enhanced_data = ingested_data_df.loc[:, columns_to_keep].copy()
 
             columns_retained = enhanced_data.columns
             logging.info(f" Here are the retained columns after removing betting odds : {columns_retained}")
