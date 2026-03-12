@@ -1,5 +1,6 @@
 Feature_name,Feature_description,Betting_odd
 Div,League Division,FALSE
+Season_id,The season the match belongs to,FALSE
 Date,Match Date (dd/mm/yy),FALSE
 Time,Time of match kick off,FALSE
 HomeTeam,Home Team,FALSE

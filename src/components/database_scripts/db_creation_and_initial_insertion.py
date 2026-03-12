@@ -45,7 +45,7 @@ class DatabaseInsertion:
     TABLE_NAME = 'epl_data'
     
     # Column configuration
-    COLUMN_ORDER = [
+    COLUMN_ORDER = [ 'season_id',
         'Date', 'HomeTeam', 'AwayTeam', 'FTHG', 'FTAG', 'FTR', 
         'HTHG', 'HTAG', 'HTR', 'Referee', 'HomeShots', 'AwayShots', 
         'HST', 'AST', 'HF', 'AF', 'HC', 'AC', 'HY', 'AY', 'HR', 'AR', 
@@ -61,6 +61,7 @@ class DatabaseInsertion:
     CREATE_TABLE_SQL = """
         CREATE TABLE IF NOT EXISTS epl_data(
             id SERIAL PRIMARY KEY,
+            season_id VARCHAR(255),
             date DATE NULL,
             hometeam VARCHAR(255) NOT NULL,
             awayteam VARCHAR(255) NOT NULL,
