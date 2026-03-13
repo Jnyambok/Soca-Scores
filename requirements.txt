@@ -7,3 +7,4 @@ matplotlib
 seaborn
 numpy
 pandas
+altair.vegalite.v4
