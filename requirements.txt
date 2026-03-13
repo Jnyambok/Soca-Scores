@@ -1,10 +1,6 @@
-
-pandas
-pyyaml
-
-streamlit
-matplotlib
-seaborn
-numpy
-pandas
-altair.vegalite.v4
+streamlit==1.32.0
+matplotlib==3.8.3
+seaborn==0.13.2
+numpy==1.26.4
+pandas==2.2.1
+altair==4.2.2
