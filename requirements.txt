@@ -2,3 +2,8 @@
 pandas
 pyyaml
 
+streamlit
+matplotlib
+seaborn
+numpy
+pandas
