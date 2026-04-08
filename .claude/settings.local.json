@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ':*)",
+      "Bash(datasets/processed/)",
+      "Bash(python3)"
+    ]
+  }
+}

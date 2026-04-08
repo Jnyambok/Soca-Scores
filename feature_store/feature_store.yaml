@@ -1,0 +1,31 @@
+# Soca Scores — Feast Feature Store
+# Registry: local file (simple, no extra DB connection needed)
+# Offline store: Neon PostgreSQL direct endpoint (session-mode, no pooler)
+# Online store: Neon PostgreSQL direct endpoint
+
+project: soca_scores
+registry: data/registry.db
+
+provider: local
+
+offline_store:
+  type: postgres
+  host: ${NEON_DB_HOST_DIRECT}
+  port: 5432
+  database: ${NEON_DB_NAME}
+  db_schema: public
+  user: ${NEON_DB_ROLE}
+  password: ${NEON_DB_PASSWORD}
+  sslmode: require
+
+online_store:
+  type: postgres
+  host: ${NEON_DB_HOST_DIRECT}
+  port: 5432
+  database: ${NEON_DB_NAME}
+  db_schema: feast_online
+  user: ${NEON_DB_ROLE}
+  password: ${NEON_DB_PASSWORD}
+  sslmode: require
+
+entity_key_serialization_version: 3
