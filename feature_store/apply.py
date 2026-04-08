@@ -28,8 +28,8 @@ from feast import FeatureStore
 from src.logger import logging
 from src.exception import CustomException
 
-import entities
-import feature_views
+from . import entities
+from . import feature_views
 
 
 def run_apply() -> None:

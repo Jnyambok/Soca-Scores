@@ -17,8 +17,8 @@ from datetime import timedelta
 from feast import FeatureView, Field
 from feast.types import Float64, Int64
 
-from data_sources import match_features_source
-from entities import match
+from .data_sources import match_features_source
+from .entities import match
 
 # ── 1. Categorical / Encoding ────────────────────────────────────────────────
 categorical_fv = FeatureView(
