@@ -1,8 +1,0 @@
-artifact_location: file:c:/Users/juliu/OneDrive/Desktop/Projects/Soca-Scores/experiments/notebooks/../../mlruns/527479458778279889
-creation_time: 1776250055515
-experiment_id: '527479458778279889'
-last_update_time: 1776250055515
-lifecycle_stage: active
-name: soca_scores_match_prediction
-trace_location: null
-workspace: default
