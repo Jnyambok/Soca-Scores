@@ -1,0 +1,16 @@
+creation_timestamp: 1776250376994
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1776250376994
+model_id: m-e3fe59aca5164648b400c66c26eb3857
+name: soca_result
+run_id: ced049844b12459597c73ea162870874
+run_link: null
+source: models:/m-e3fe59aca5164648b400c66c26eb3857
+status: READY
+status_message: null
+storage_location: file:c:/Users/juliu/OneDrive/Desktop/Projects/Soca-Scores/experiments/notebooks/../../mlruns/527479458778279889/models/m-e3fe59aca5164648b400c66c26eb3857/artifacts
+user_id: null
+version: 2
+workspace: default

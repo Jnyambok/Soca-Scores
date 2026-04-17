@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/juliu/OneDrive/Desktop/Projects/Soca-Scores/experiments/notebooks/../../mlruns/527479458778279889/fc37ad8e36b046648c1afee849728cce/artifacts
+end_time: 1776250312455
+entry_point_name: ''
+experiment_id: '527479458778279889'
+lifecycle_stage: active
+run_id: fc37ad8e36b046648c1afee849728cce
+run_name: btts_prediction
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776250312372
+status: 4
+tags: []
+user_id: juliu
