@@ -8,6 +8,13 @@ configs/
 *.png
 .claude/
 
+# MLflow
+mlruns/
+mlflow.db
+
+# Trained models and encoders
+models/
+
 
 
 
