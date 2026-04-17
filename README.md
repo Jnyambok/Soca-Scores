@@ -7,6 +7,7 @@
 ## Second Article in the Series :[ Phase 1: Data Ingestion](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-c9c1d4f83187)
 ## Third Article in the Series :[ Phase 2: Data Cleaning and Transformation](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-8760a79ddfe1)
 ## Fourth Article in the Series :[Phase 3: Exploratory Data Analysis](https://medium.com/data-ai-and-beyond/what-the-last-20-years-of-premier-league-data-actually-tells-us-against-the-2025-26-season-67716dee2eac)
+## Fifth Article in the Series :[Phase 4: Feature Engineering and Selection](https://medium.com/@juliusnyambok14/170fd31c2c76)
 
 
 [Data Project Structure Best Practices](https://medium.com/the-pythonworld/best-practices-for-structuring-a-python-project-like-a-pro-be6013821168)
