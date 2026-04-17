@@ -290,6 +290,34 @@ Date,HomeTeam,AwayTeam,FTHG,FTAG,FTR,HTHG,HTAG,HTR,Referee,HS,AS,HST,AST,HF,AF,H
 2026-04-03,Man City,Nott'm Forest,2,2,D,1,0,H,D England,21,9.0,7,4,10,6,6,1,0,4,0,0,2025-2026,April,2026,Friday
 2026-04-03,Newcastle,Man United,2,1,H,1,1,D,P Bankes,12,14.0,5,5,15,16,2,4,2,3,1,0,2025-2026,April,2026,Friday
 2026-05-03,Tottenham,Crystal Palace,1,3,A,1,3,A,A Madley,12,9.0,4,4,14,14,6,3,3,2,0,0,2025-2026,May,2026,Sunday
+2026-03-14,Burnley,Bournemouth,0,0,D,0,0,D,P Bankes,15,22.0,2,3,11,5,5,8,1,0,0,0,2025-2026,March,2026,Saturday
+2026-03-14,Sunderland,Brighton,0,1,A,0,0,D,T Kirk,14,12.0,4,4,7,12,7,3,1,2,0,0,2025-2026,March,2026,Saturday
+2026-03-14,Arsenal,Everton,2,0,H,0,0,D,A Madley,25,9.0,7,3,11,12,8,3,0,0,0,0,2025-2026,March,2026,Saturday
+2026-03-14,Chelsea,Newcastle,0,1,A,0,1,A,P Tierney,22,7.0,3,5,9,10,8,1,2,2,0,0,2025-2026,March,2026,Saturday
+2026-03-14,West Ham,Man City,1,1,D,1,1,D,M Oliver,1,24.0,1,6,14,5,1,15,2,2,0,0,2025-2026,March,2026,Saturday
+2026-03-15,Crystal Palace,Leeds,0,0,D,0,0,D,T Bramall,12,10.0,0,3,12,11,8,3,2,1,0,1,2025-2026,March,2026,Sunday
+2026-03-15,Man United,Aston Villa,3,1,H,0,0,D,A Taylor,16,9.0,6,2,10,5,6,6,3,2,0,0,2025-2026,March,2026,Sunday
+2026-03-15,Nott'm Forest,Fulham,0,0,D,0,0,D,S Barrott,11,5.0,2,0,8,10,5,4,2,3,0,0,2025-2026,March,2026,Sunday
+2026-03-15,Liverpool,Tottenham,1,1,D,1,0,H,C Kavanagh,17,13.0,4,7,8,13,3,4,0,0,0,0,2025-2026,March,2026,Sunday
+2026-03-16,Brentford,Wolves,2,2,D,2,1,H,S Attwell,10,13.0,3,4,12,10,1,5,2,4,0,0,2025-2026,March,2026,Monday
+2026-03-20,Bournemouth,Man United,2,2,D,0,0,D,S Attwell,16,14.0,5,5,10,9,6,8,2,2,0,1,2025-2026,March,2026,Friday
+2026-03-21,Brighton,Liverpool,2,1,H,1,1,D,D England,16,12.0,7,5,11,11,4,8,5,5,0,0,2025-2026,March,2026,Saturday
+2026-03-21,Fulham,Burnley,3,1,H,0,0,D,C Kavanagh,22,9.0,6,5,6,9,6,6,2,2,0,1,2025-2026,March,2026,Saturday
+2026-03-21,Everton,Chelsea,3,0,H,1,0,H,S Barrott,10,12.0,9,4,6,7,3,9,0,2,0,0,2025-2026,March,2026,Saturday
+2026-03-21,Leeds,Brentford,0,0,D,0,0,D,J Gillett,14,6.0,4,2,6,9,6,2,2,0,0,0,2025-2026,March,2026,Saturday
+2026-03-22,Newcastle,Sunderland,1,2,A,1,0,H,A Taylor,16,17.0,4,7,8,19,9,5,1,6,0,0,2025-2026,March,2026,Sunday
+2026-03-22,Aston Villa,West Ham,2,0,H,1,0,H,P Tierney,23,9.0,7,1,3,7,6,6,0,1,0,0,2025-2026,March,2026,Sunday
+2026-03-22,Tottenham,Nott'm Forest,0,3,A,0,1,A,M Oliver,14,8.0,3,7,13,13,13,3,1,2,0,0,2025-2026,March,2026,Sunday
+2026-10-04,West Ham,Wolves,4,0,H,1,0,H,J Gillett,18,14.0,7,3,11,7,5,2,2,2,0,0,2025-2026,October,2026,Sunday
+2026-11-04,Arsenal,Bournemouth,1,2,A,1,1,D,M Oliver,15,8.0,3,3,12,18,10,1,1,3,0,0,2025-2026,November,2026,Wednesday
+2026-11-04,Brentford,Everton,2,2,D,1,1,D,F Hallam,17,14.0,4,7,6,7,2,3,0,2,0,0,2025-2026,November,2026,Wednesday
+2026-11-04,Burnley,Brighton,0,2,A,0,1,A,T Bramall,10,13.0,5,6,7,11,8,2,2,1,0,0,2025-2026,November,2026,Wednesday
+2026-11-04,Liverpool,Fulham,2,0,H,2,0,H,A Taylor,18,19.0,5,4,10,4,6,9,0,0,0,0,2025-2026,November,2026,Wednesday
+2026-12-04,Crystal Palace,Newcastle,2,1,H,0,1,A,A Madley,11,7.0,5,3,17,12,2,4,0,3,0,0,2025-2026,December,2026,Friday
+2026-12-04,Nott'm Forest,Aston Villa,1,1,D,1,1,D,M Salisbury,15,12.0,4,5,15,10,7,3,2,2,0,0,2025-2026,December,2026,Friday
+2026-12-04,Sunderland,Tottenham,1,0,H,0,0,D,R Jones,13,11.0,2,7,14,15,2,6,3,3,0,0,2025-2026,December,2026,Friday
+2026-12-04,Chelsea,Man City,0,3,A,0,0,D,C Kavanagh,12,18.0,3,8,10,14,4,12,3,1,0,0,2025-2026,December,2026,Friday
+2026-04-13,Man United,Leeds,1,2,A,0,2,A,P Tierney,20,15.0,9,6,12,15,11,4,3,2,1,0,2025-2026,April,2026,Monday
 2024-08-16,Man United,Fulham,1,0,H,0,0,D,R Jones,14,10.0,5,2,12,10,7,8,2,3,0,0,2024-2025,August,2024,Friday
 2024-08-17,Ipswich,Liverpool,0,2,A,0,0,D,T Robinson,7,18.0,2,5,9,18,2,10,3,1,0,0,2024-2025,August,2024,Saturday
 2024-08-17,Arsenal,Wolves,2,0,H,1,0,H,J Gillett,18,9.0,6,3,17,14,8,2,2,2,0,0,2024-2025,August,2024,Saturday

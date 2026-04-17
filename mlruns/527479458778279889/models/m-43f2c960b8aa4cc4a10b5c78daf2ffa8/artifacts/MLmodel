@@ -1,0 +1,22 @@
+artifact_path: file:c:/Users/juliu/OneDrive/Desktop/Projects/Soca-Scores/experiments/notebooks/../../mlruns/527479458778279889/models/m-43f2c960b8aa4cc4a10b5c78daf2ffa8/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.13.2
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: ubj
+    xgb_version: 3.2.0
+mlflow_version: 3.11.1
+model_id: m-43f2c960b8aa4cc4a10b5c78daf2ffa8
+model_size_bytes: 731813
+model_uuid: m-43f2c960b8aa4cc4a10b5c78daf2ffa8
+prompts: null
+run_id: e8c9c05404e1435b8c8f4c27d4a640ef
+utc_time_created: '2026-04-15 11:07:37.043254'

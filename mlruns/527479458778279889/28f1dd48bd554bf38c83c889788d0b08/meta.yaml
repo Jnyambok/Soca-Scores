@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/juliu/OneDrive/Desktop/Projects/Soca-Scores/experiments/notebooks/../../mlruns/527479458778279889/28f1dd48bd554bf38c83c889788d0b08/artifacts
+end_time: 1776339123823
+entry_point_name: ''
+experiment_id: '527479458778279889'
+lifecycle_stage: active
+run_id: 28f1dd48bd554bf38c83c889788d0b08
+run_name: result_prediction
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1776339103020
+status: 3
+tags: []
+user_id: juliu

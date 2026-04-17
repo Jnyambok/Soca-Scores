@@ -1,0 +1,10 @@
+artifact_location: file:c:/Users/juliu/OneDrive/Desktop/Projects/Soca-Scores/experiments/notebooks/../../mlruns/527479458778279889/models/m-e3fe59aca5164648b400c66c26eb3857/artifacts
+creation_timestamp: 1776250369459
+experiment_id: '527479458778279889'
+last_updated_timestamp: 1776250376915
+model_id: m-e3fe59aca5164648b400c66c26eb3857
+model_type: null
+name: model
+source_run_id: ced049844b12459597c73ea162870874
+status: 2
+status_message: null
