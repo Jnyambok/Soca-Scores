@@ -261,27 +261,30 @@ python -m src.components.data_ingestion
 # 3. Clean the ingested data
 python -m src.components.data_cleaning
 
-# 4. Engineer features
+# 4. Create database tables and insert cleaned data into Neon PostgreSQL
+python -m src.components.database_scripts.db_creation_and_initial_insertion
+
+# 5. Engineer features
 python -m src.components.feature_engineering
 
-# 5. Push features to Neon (optional — feature store only)
+# 6. Push features to Neon (optional — feature store only)
 python feature_store/push_features.py
 
-# 6. Train all 5 models
+# 7. Train all 5 models
 python -m src.components.model_training
 
-# 7. View MLflow experiment runs
+# 8. View MLflow experiment runs
 mlflow ui --backend-store-uri sqlite:///mlflow.db
 # open http://localhost:5000
 
-# 8. Test inference directly
+# 9. Test inference directly
 python -m src.components.model_inference
 
-# 9. Start the FastAPI endpoint (optional — local API only)
+# 10. Start the FastAPI endpoint (optional — local API only)
 uvicorn api.main:app --reload
 # open http://localhost:8000/docs
 
-# 10. Run the Streamlit app
+# 11. Run the Streamlit app
 streamlit run app.py
 # open http://localhost:8501
 ```
