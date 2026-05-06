@@ -26,37 +26,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from src.logger import logging
 from src.exception import CustomException
-
-
-FEATURE_COLS = [
-    # categorical (htr_encoded excluded: it is the current match HT result = leakage)
-    "home_team_encoded", "away_team_encoded", "referee_encoded",
-    "day_encoded", "month_sin", "month_cos",
-    # team form
-    "home_points_last5", "home_goals_scored_avg5", "home_goals_conceded_avg5",
-    "home_sot_avg5", "home_clean_sheets_last5",
-    "home_points_last10", "home_goals_scored_avg10", "home_goals_conceded_avg10",
-    "home_win_streak",
-    "away_points_last5", "away_goals_scored_avg5", "away_goals_conceded_avg5",
-    "away_sot_avg5", "away_clean_sheets_last5",
-    "away_points_last10", "away_goals_scored_avg10", "away_goals_conceded_avg10",
-    "away_win_streak",
-    # home/away split
-    "home_win_rate_last10", "home_goals_avg_last10",
-    "away_win_rate_last10", "away_goals_avg_last10",
-    # head-to-head
-    "h2h_meetings", "h2h_home_win_rate", "h2h_avg_total_goals", "h2h_btts_rate",
-    # shot quality
-    "home_conversion_rate_avg5", "home_sot_ratio_avg5",
-    "away_conversion_rate_avg5", "away_sot_ratio_avg5",
-    # half-time patterns (rolling from previous matches, not the current one)
-    "home_2nd_half_goals_avg5", "home_lead_hold_rate", "home_comeback_rate",
-    "away_2nd_half_goals_avg5", "away_lead_hold_rate", "away_comeback_rate",
-    # referee
-    "ref_avg_yellows", "ref_avg_fouls", "ref_home_win_rate",
-    # temporal
-    "match_week", "season_phase", "home_days_rest", "away_days_rest",
-]
+from src.components.features import FEATURE_COLS
 
 
 @dataclass

@@ -1,6 +1,5 @@
 streamlit
 xgboost
-mlflow
 pandas
 numpy
 scikit-learn
