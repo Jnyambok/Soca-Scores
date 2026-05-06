@@ -12,8 +12,7 @@ configs/
 mlruns/
 mlflow.db
 
-# Trained models and encoders
-models/
+# Trained models and encoders tracked for deployment (models/*.ubj and models/*.pkl)
 
 
 

@@ -13,10 +13,9 @@ import pickle
 from dataclasses import dataclass
 from pathlib import Path
 
-import mlflow
-import mlflow.xgboost
 import numpy as np
 import pandas as pd
+from xgboost import XGBClassifier, XGBRegressor
 
 from src.logger import logging
 from src.exception import CustomException
@@ -41,34 +40,33 @@ MONTH_ORDER = {
 class ModelInferenceConfig:
     project_root: Path = Path(__file__).resolve().parent.parent.parent
     models_dir: Path = None
-    mlflow_uri: str = None
-    registry_uri: str = None
     data_path: Path = None
 
     def __post_init__(self) -> None:
         self.models_dir = self.project_root / "models"
-        self.mlflow_uri   = f"sqlite:///{self.project_root / 'mlflow.db'}"
-        self.registry_uri = f"sqlite:///{self.project_root / 'mlflow.db'}"
         self.data_path  = self.project_root / "datasets" / "processed" / "feature_engineered_dataset.csv"
 
 
 class ModelInference:
     def __init__(self) -> None:
         self.config = ModelInferenceConfig()
-        mlflow.set_tracking_uri(self.config.mlflow_uri)
-        mlflow.set_registry_uri(self.config.registry_uri)
         self._load_models()
         self._load_encoders()
         self._load_history()
 
     def _load_models(self) -> None:
         try:
-            logging.info("Loading models from MLflow registry")
-            self.model_result  = mlflow.xgboost.load_model("models:/soca_result/latest")
-            self.model_btts    = mlflow.xgboost.load_model("models:/soca_btts/latest")
-            self.model_over25  = mlflow.xgboost.load_model("models:/soca_over25/latest")
-            self.model_over15  = mlflow.xgboost.load_model("models:/soca_over15/latest")
-            self.model_goals   = mlflow.xgboost.load_model("models:/soca_goals/latest")
+            logging.info("Loading models from local files")
+            self.model_result = XGBClassifier()
+            self.model_result.load_model(self.config.models_dir / "soca_result.ubj")
+            self.model_btts = XGBClassifier()
+            self.model_btts.load_model(self.config.models_dir / "soca_btts.ubj")
+            self.model_over25 = XGBClassifier()
+            self.model_over25.load_model(self.config.models_dir / "soca_over25.ubj")
+            self.model_over15 = XGBClassifier()
+            self.model_over15.load_model(self.config.models_dir / "soca_over15.ubj")
+            self.model_goals = XGBRegressor()
+            self.model_goals.load_model(self.config.models_dir / "soca_goals.ubj")
             logging.info("All 5 models loaded")
         except Exception as e:
             raise CustomException(e, sys) from e

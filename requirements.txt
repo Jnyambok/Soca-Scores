@@ -1,0 +1,11 @@
+streamlit
+fastapi
+uvicorn
+xgboost
+mlflow
+pandas
+numpy
+scikit-learn
+python-dotenv
+feast
+psycopg2-binary

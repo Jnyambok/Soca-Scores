@@ -156,6 +156,7 @@ class ModelTraining:
                 print(f"{run_name:20s} Accuracy: {acc:.3f} | AUC: {auc:.3f}")
 
             mlflow.xgboost.log_model(model, name="model", registered_model_name=model_name)
+            model.save_model(self.config.models_dir / f"{model_name}.ubj")
 
     def _train_regressor(self, run_name, model_name, X_train, X_test, y_train, y_test):
         with mlflow.start_run(run_name=run_name):
@@ -167,6 +168,7 @@ class ModelTraining:
             mlflow.log_params(self.config.regressor_params)
             mlflow.log_metric("mae", mae)
             mlflow.xgboost.log_model(model, name="model", registered_model_name=model_name)
+            model.save_model(self.config.models_dir / f"{model_name}.ubj")
             print(f"{run_name:20s} MAE: {mae:.3f}")
 
     def train_all(self) -> None:
