@@ -20,7 +20,7 @@ from xgboost import XGBClassifier, XGBRegressor
 from src.logger import logging
 from src.exception import CustomException
 
-from src.components.model_training import FEATURE_COLS
+from src.components.features import FEATURE_COLS
 
 
 RESULT_MAP = {0: "Away Win", 1: "Draw", 2: "Home Win"}
