@@ -8,6 +8,8 @@
 ## Third Article in the Series :[ Phase 2: Data Cleaning and Transformation](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-8760a79ddfe1)
 ## Fourth Article in the Series :[Phase 3: Exploratory Data Analysis](https://medium.com/data-ai-and-beyond/what-the-last-20-years-of-premier-league-data-actually-tells-us-against-the-2025-26-season-67716dee2eac)
 ## Fifth Article in the Series :[Phase 4: Feature Engineering and Selection](https://medium.com/@juliusnyambok14/170fd31c2c76)
+## Sixth Article in the Series : Phase 5: Model Training and Inference *(coming soon)*
+## Seventh Article in the Series : Phase 6: Deployment *(coming soon)*
 
 
 [Data Project Structure Best Practices](https://medium.com/the-pythonworld/best-practices-for-structuring-a-python-project-like-a-pro-be6013821168)
@@ -142,33 +144,69 @@ premier_league_predictions/
 
 ## 📁 **Current Project Structure** 
 ```
-
-Directory structure:
 └── jnyambok-soca-scores/
     ├── README.md
-    ├── data_dictionary_spreadsheet.html  #Added a html page for the data_dictionary
+    ├── app.py                                          ← Streamlit web interface
+    ├── data_dictionary_spreadsheet.html
+    ├── image.png
     ├── requirements.txt
-    ├── logs/
+    ├── api/
+    │   ├── __init__.py
+    │   ├── main.py                                     ← FastAPI app with /health, /teams, /predict
+    │   └── schemas.py                                  ← Pydantic request/response models
     ├── datasets/
-    │   └── common_data/
-    │       ├── english_league_data_urls.csv
-    │       └── feature_catalog.csv
+    │   ├── common_data/
+    │   │   ├── english_league_data_urls.csv
+    │   │   └── feature_catalog.csv
+    │   ├── cleaned_ingested_data/
+    │   │   └── cleaned_ingested_data.csv
+    │   ├── ingested_data/
+    │   │   └── enhanced_dataset.csv
+    │   └── processed/
+    │       └── feature_engineered_dataset.csv          ← 7891 rows, 81 cols, 0 nulls
     ├── experiments/
     │   ├── notebooks/
-    │   │   └── data_ingestion.ipynb
-    │   └── scripts/             #Added a scripts environ to test scripts
+    │   │   ├── data_cleaning.ipynb
+    │   │   ├── data_ingestion.ipynb
+    │   │   ├── eda.ipynb
+    │   │   ├── feature_engineering.ipynb
+    │   │   ├── model_inference.ipynb
+    │   │   └── model_training.ipynb
+    │   └── scripts/
     │       └── data_cleaning.py
-    └── src/
-        ├── __init__.py
-        ├── exception.py
-        ├── logger.py
-        └── components/
-            ├── __init__.py
-            ├── data_cleaning.py       #Added a script for cleaning the data before the database
-            ├── data_ingestion.py    
-            └── database_scripts/
-                └── db_creation_and_initial_insertion.py  #For the initial creation and insertion
-
+    ├── feature_store/
+    │   ├── __init__.py
+    │   ├── apply.py
+    │   ├── data_sources.py
+    │   ├── entities.py
+    │   ├── feature_store.yaml
+    │   ├── feature_views.py
+    │   └── push_features.py
+    ├── models/
+    │   ├── soca_result.ubj                             ← Match result classifier
+    │   ├── soca_btts.ubj                               ← Both teams to score classifier
+    │   ├── soca_over25.ubj                             ← Over 2.5 goals classifier
+    │   ├── soca_over15.ubj                             ← Over 1.5 goals classifier
+    │   ├── soca_goals.ubj                              ← Total goals regressor
+    │   ├── team_encoder.pkl
+    │   └── referee_encoder.pkl
+    ├── src/
+    │   ├── __init__.py
+    │   ├── exception.py
+    │   ├── logger.py
+    │   └── components/
+    │       ├── __init__.py
+    │       ├── data_cleaning.py
+    │       ├── data_ingestion.py
+    │       ├── feature_engineering.py
+    │       ├── features.py                             ← FEATURE_COLS definition, no imports
+    │       ├── model_inference.py
+    │       ├── model_training.py
+    │       └── database_scripts/
+    │           └── db_creation_and_initial_insertion.py
+    └── .github/
+        └── workflows/
+            └── static.yml
 ```
 
 ---
@@ -212,29 +250,43 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### **Run Individual Components**
+### **Run Start to Finish**
 ```bash
-# Data ingestion
-python -m src.data_ingestion.data_ingestion
+# 1. Install dependencies
+pip install -r requirements.txt
 
-# Feature engineering
-python -m src.feature_store.feature_engineering
+# 2. Ingest raw EPL data
+python -m src.components.data_ingestion
 
-# Model training
-python -m src.models.training
+# 3. Clean the ingested data
+python -m src.components.data_cleaning
 
-# Generate predictions
-python -m src.models.inference
+# 4. Engineer features
+python -m src.components.feature_engineering
 
-# Start Streamlit dashboard
-streamlit run deployment/streamlit_app/app.py
+# 5. Push features to Neon (optional — feature store only)
+python feature_store/push_features.py
+
+# 6. Train all 5 models
+python -m src.components.model_training
+
+# 7. View MLflow experiment runs
+mlflow ui --backend-store-uri sqlite:///mlflow.db
+# open http://localhost:5000
+
+# 8. Test inference directly
+python -m src.components.model_inference
+
+# 9. Start the FastAPI endpoint (optional — local API only)
+uvicorn api.main:app --reload
+# open http://localhost:8000/docs
+
+# 10. Run the Streamlit app
+streamlit run app.py
+# open http://localhost:8501
 ```
 
-### **Run Complete Pipeline**
-```bash
-# Execute full MLOps pipeline
-python scripts/run_full_pipeline.py
-```
+> Steps 1 through 6 must run in order. Steps 7 through 10 are independent and can be run in any order after training.
 
 ---
 
@@ -254,29 +306,45 @@ python scripts/run_full_pipeline.py
 
 ## 📈 **Roadmap**
 
-### **Phase 1: Data Ingestion** ✅ (Finished on 08/19)
+### **Phase 0: Environment Setup** ✅
 - [x] Project structure and configuration
-- [x] Loading dataset urls
-- [x] Ingesting data from data sources (footballdata.uk)
-- [x] Merging the various datasets and storing locally
+- [x] Logging and exception handling
 
-### **Phase 2: Data Cleaning x Transformation and Database Loading**
-- [ ] Feature store implementation
-- [ ] Model registry setup
-- [ ] Streamlit dashboard
-- [ ] Basic monitoring
+### **Phase 1: Data Ingestion** ✅
+- [x] Loading dataset URLs
+- [x] Ingesting data from footballdata.uk
+- [x] Merging datasets and storing locally
 
-### **Phase 3: Advanced Features** 📋
-- [ ] Advanced feature engineering (player data, weather)
-- [ ] Model ensemble and optimization
-- [ ] Real-time prediction API
-- [ ] Comprehensive monitoring dashboard
+### **Phase 2: Data Cleaning and Database Loading** ✅
+- [x] Cleaning and transforming raw match data
+- [x] Loading cleaned data into Neon PostgreSQL
 
-### **Phase 4: Production** 🚀
-- [ ] Cloud deployment
-- [ ] Automated CI/CD
-- [ ] Performance optimization
-- [ ] User feedback integration
+### **Phase 3: Exploratory Data Analysis** ✅
+- [x] 20 years of EPL data analysis
+- [x] Team form, referee, and seasonal trend analysis
+
+### **Phase 4: Feature Engineering and Feature Store** ✅
+- [x] 49 pre-match features across 7 groups
+- [x] Feast feature store with 8 feature views on Neon PostgreSQL
+
+### **Phase 5: Model Training and Inference** ✅
+- [x] 5 XGBoost models (result, BTTS, over 2.5, over 1.5, total goals)
+- [x] MLflow experiment tracking and model registry
+- [x] FastAPI inference endpoint
+
+### **Phase 6: Deployment** ✅
+- [x] Streamlit web interface deployed to Streamlit Cloud
+- [x] Local model files (.ubj) for dependency-free deployment
+
+### **Phase 7: Evaluation** 📋
+- [ ] Brier score and calibration curves
+- [ ] Confusion matrix and backtesting
+- [ ] Baseline comparison
+
+### **Phase 8: Monitoring and Improvement** 🚀
+- [ ] Live data feed and weekly retraining
+- [ ] Pi-ratings / Elo features
+- [ ] Cross-league generalisation
 
 ---
 
