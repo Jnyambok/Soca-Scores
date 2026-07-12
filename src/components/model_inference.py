@@ -90,11 +90,20 @@ class ModelInference:
         except Exception as e:
             raise CustomException(e, sys) from e
 
+    def _encode_label(self, encoder, value: str) -> int:
+        """Return encoded label, falling back to median index for unseen values (e.g. promoted teams)."""
+        if value not in encoder.classes_:
+            logging.warning(f"Unknown label '{value}' — using median fallback encoding")
+            return int(np.median(range(len(encoder.classes_))))
+        return int(encoder.transform([value])[0])
+
     def _get_team_features(self, team: str, side: str) -> dict:
         col  = "HomeTeam" if side == "home" else "AwayTeam"
         rows = self.df[self.df[col] == team]
         if rows.empty:
-            raise ValueError(f"Team not found in history: {team}")
+            logging.warning(f"Team '{team}' not found in history — using league-average features")
+            prefix = side + "_"
+            return {c: float(self.df[c].mean()) for c in FEATURE_COLS if c.startswith(prefix)}
         latest = rows.iloc[-1]
         return {c: latest[c] for c in FEATURE_COLS if c.startswith(side + "_")}
 
@@ -132,9 +141,9 @@ class ModelInference:
             day_name  = date_obj.day_name()
 
             features = {}
-            features["home_team_encoded"] = int(self.team_encoder.transform([home_team])[0])
-            features["away_team_encoded"] = int(self.team_encoder.transform([away_team])[0])
-            features["referee_encoded"]   = int(self.referee_encoder.transform([referee])[0])
+            features["home_team_encoded"] = self._encode_label(self.team_encoder, home_team)
+            features["away_team_encoded"] = self._encode_label(self.team_encoder, away_team)
+            features["referee_encoded"]   = self._encode_label(self.referee_encoder, referee)
             features["day_encoded"]        = DAY_ORDER.get(day_name, 5)
             features["month_sin"]          = float(np.sin(2 * np.pi * month_num / 12))
             features["month_cos"]          = float(np.cos(2 * np.pi * month_num / 12))

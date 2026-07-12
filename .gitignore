@@ -9,6 +9,7 @@ configs/
 .claude/
 AZURE_DEPLOYMENT.md
 .env.azure
+ARTICLE_PHASE7.md
 
 # MLflow
 mlruns/
