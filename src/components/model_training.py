@@ -21,8 +21,11 @@ import mlflow.xgboost
 import pandas as pd
 import numpy as np
 from xgboost import XGBClassifier, XGBRegressor
-from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, mean_absolute_error
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, mean_absolute_error,brier_score_loss
 from sklearn.preprocessing import LabelEncoder
+
+#Added CalibrationCV
+from sklearn.calibration import CalibratedClassifierCV
 
 from src.logger import logging
 from src.exception import CustomException
@@ -98,7 +101,7 @@ class ModelTraining:
             raise CustomException(e, sys) from e
 
     def _train_classifier(self, run_name, model_name, X_train, X_test, y_train, y_test,
-                          objective, num_class=None):
+                          objective, num_class=None, calibrate=False):
         params = {**self.config.classifier_params, "objective": objective}
         if num_class:
             params["num_class"]   = num_class
@@ -107,26 +110,53 @@ class ModelTraining:
             params["eval_metric"] = "logloss"
 
         with mlflow.start_run(run_name=run_name):
-            model = XGBClassifier(**params)
-            model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
 
-            preds = model.predict(X_test)
-            acc   = accuracy_score(y_test, preds)
-            mlflow.log_params(params)
-            mlflow.log_metric("accuracy", acc)
+            if calibrate:
+                # Train base model on full training data and save .ubj
+                model = XGBClassifier(**params)
+                model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
+                model.save_model(self.config.models_dir / f"{model_name}.ubj")
 
-            if num_class:
-                f1 = f1_score(y_test, preds, average="weighted")
-                mlflow.log_metric("f1_weighted", f1)
-                print(f"{run_name:20s} Accuracy: {acc:.3f} | F1: {f1:.3f}")
-            else:
-                proba = model.predict_proba(X_test)[:, 1]
+                # Train calibrated version using 5-fold cross-validation
+                cal_model = XGBClassifier(**params)
+                calibrated = CalibratedClassifierCV(cal_model, method="isotonic", cv=5)
+                calibrated.fit(X_train, y_train)
+
+                preds = calibrated.predict(X_test)
+                proba = calibrated.predict_proba(X_test)[:, 1]
+                acc   = accuracy_score(y_test, preds)
                 auc   = roc_auc_score(y_test, proba)
-                mlflow.log_metric("roc_auc", auc)
-                print(f"{run_name:20s} Accuracy: {acc:.3f} | AUC: {auc:.3f}")
+                bs    = brier_score_loss(y_test, proba)
 
-            mlflow.xgboost.log_model(model, name="model", registered_model_name=model_name)
-            model.save_model(self.config.models_dir / f"{model_name}.ubj")
+                mlflow.log_params(params)
+                mlflow.log_metric("accuracy", acc)
+                mlflow.log_metric("roc_auc", auc)
+                mlflow.log_metric("brier_score", bs)
+                print(f"{run_name:20s} Accuracy: {acc:.3f} | AUC: {auc:.3f} | Brier: {bs:.4f}")
+
+                with open(self.config.models_dir / f"{model_name}_calibrated.pkl", "wb") as f:
+                    pickle.dump(calibrated, f)
+            else:
+                model = XGBClassifier(**params)
+                model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)                            
+
+                preds = model.predict(X_test)
+                acc   = accuracy_score(y_test, preds)
+                mlflow.log_params(params)
+                mlflow.log_metric("accuracy", acc)
+
+                if num_class:
+                    f1 = f1_score(y_test, preds, average="weighted")
+                    mlflow.log_metric("f1_weighted", f1)
+                    print(f"{run_name:20s} Accuracy: {acc:.3f} | F1: {f1:.3f}")
+                else:
+                    proba = model.predict_proba(X_test)[:, 1]
+                    auc   = roc_auc_score(y_test, proba)
+                    mlflow.log_metric("roc_auc", auc)
+                    print(f"{run_name:20s} Accuracy: {acc:.3f} | AUC: {auc:.3f}")
+
+                mlflow.xgboost.log_model(model, name="model", registered_model_name=model_name)
+                model.save_model(self.config.models_dir / f"{model_name}.ubj")
 
     def _train_regressor(self, run_name, model_name, X_train, X_test, y_train, y_test):
         with mlflow.start_run(run_name=run_name):
@@ -163,11 +193,13 @@ class ModelTraining:
                 "btts_prediction", "soca_btts",
                 X_train, X_test, train["btts"], test["btts"],
                 objective="binary:logistic",
+                calibrate = True,
             )
             self._train_classifier(
                 "over25_prediction", "soca_over25",
                 X_train, X_test, train["over_2_5"], test["over_2_5"],
                 objective="binary:logistic",
+                calibrate = True,
             )
             self._train_classifier(
                 "over15_prediction", "soca_over15",

@@ -9,7 +9,8 @@ configs/
 .claude/
 AZURE_DEPLOYMENT.md
 .env.azure
-ARTICLE_PHASE7.md
+ARTICLE_*.md
+SKILL_AUDIT.md
 
 # MLflow
 mlruns/

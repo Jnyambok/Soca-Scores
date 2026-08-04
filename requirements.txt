@@ -6,3 +6,4 @@ scikit-learn
 python-dotenv
 matplotlib
 ipykernel
+mlflow
