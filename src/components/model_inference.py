@@ -66,10 +66,10 @@ class ModelInference:
             self.model_over25 = XGBClassifier()
             self.model_over25.load_model(self.config.models_dir / "soca_over25.ubj") """
 
-            with open(self.config.model_dir/"soca_btts_calibrated.pkl" , "rb") as f:
+            with open(self.config.models_dir/"soca_btts_calibrated.pkl" , "rb") as f:
                 self.model_btts = pickle.load(f)
-            
-            with open(self.config.model_dir/"soca_over25_calibrated.pkl","rb") as f:
+
+            with open(self.config.models_dir/"soca_over25_calibrated.pkl","rb") as f:
                 self.model_over25 = pickle.load(f)
 
 
