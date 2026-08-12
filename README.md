@@ -351,6 +351,48 @@ streamlit run app.py
 
 ---
 
+## 🔨 **Active Work — 2026/27 Season Launch**
+
+Tracking the push toward Game Week 1 (22 Aug 2026) and the season-long Monte Carlo simulation. Updated as work lands.
+
+### **1. Chores & Bug Fixes**
+- [x] Fix `model_dir` → `models_dir` typo in `model_inference.py` (broke calibrated BTTS/Over 2.5 loading)
+- [ ] Regenerate `requirements.txt` from a clean venv (`openpyxl`, `fastapi`, `uvicorn`, `mlflow`, `feast`, `psycopg2-binary`, `sqlalchemy`, `pydantic` are imported but missing)
+- [ ] Make `referee` optional in `predict()` / `build_features()` — real fixtures have no referee assigned until matchday
+- [ ] Fix `src/logger.py` directory-nesting bug (`os.makedirs` on a file path, not its parent)
+- [ ] Reconcile `FEATURE_COLS` (`features.py`) vs `FEATURE_COLUMNS` (`push_features.py`) drift
+- [ ] Drop the stray `english_league_data_urls copy.csv`
+
+### **2. Team Name Canonicalization**
+- [ ] Build fixture-name → encoder-name alias map (10 of 20 2026/27 teams currently mismatch, e.g. "Manchester City" vs "Man City")
+- [ ] Explicit handling + documented limitation for Coventry City (genuinely zero PL history in the dataset)
+- [ ] Test: alias map covers all 20 current fixture-file teams
+
+### **3. Game Week 1 Predictions**
+- [ ] Script: load fixture file → filter to GW1 → run through inference → clean output table
+- [ ] Sanity-check outputs against Phase 7 evaluation numbers before publishing
+- [ ] Article write-up
+
+### **4. Monte Carlo Season Simulation**
+- [ ] Per-team Poisson goal simulation (goals model itself is unreliable per Phase 7 — needed for goal-difference tie-breaks only)
+- [ ] Simulate all 380 fixtures × N runs (10k+)
+- [ ] Aggregate into final-table rank distributions (1–20), title/top-4/relegation probabilities
+- [ ] Visualizations for the article
+
+### **5. Interactive Predictions Interface**
+- [ ] Team crest/logo assets (source + store, mapped through the same canonical team names from #2)
+- [ ] Interactive fixture picker in the app so users can select a matchup and see predictions live
+- [ ] Wire logos into both the GW1 view and the season-simulation view
+
+### **6. Engineering Practices / Infra**
+- [ ] pytest suite, starting with: alias-map coverage, feature schema consistency, inference smoke test
+- [ ] GitHub Actions workflow that actually runs pytest on push/PR (replacing the unrelated static-pages template)
+- [ ] Branch protection on `main` requiring that check
+- [ ] Adopt one commit convention (Conventional Commits: `feat:`, `fix:`, `chore:`, `test:`, `docs:`)
+- [ ] PR + self-review workflow for every task above
+
+---
+
 ## 🤝 **Contributing**
 
 Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
