@@ -6,9 +6,6 @@ scikit-learn
 python-dotenv
 matplotlib
 ipykernel
-mlflow
-
-
 # missing packages added
 openpyxl
 fastapi
@@ -17,3 +14,4 @@ mlflow
 psycopg2-binary
 sqlalchemy
 pydantic
+feast
