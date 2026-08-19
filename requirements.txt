@@ -2,7 +2,7 @@ streamlit
 xgboost
 pandas
 numpy
-scikit-learn
+scikit-learn==1.9.0
 python-dotenv
 matplotlib
 ipykernel
