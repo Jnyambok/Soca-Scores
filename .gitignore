@@ -209,7 +209,11 @@ cython_debug/
 #  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 #  and can be added to the global gitignore or merged into this file. However, if you prefer, 
 #  you could uncomment the following to ignore the entire vscode folder
-.vscode/
+#  settings.json is tracked deliberately -- it pins the default interpreter
+#  to the project venv so VS Code doesn't fall back to a system Python
+#  with mismatched package versions.
+.vscode/*
+!.vscode/settings.json
 
 # Ruff stuff:
 .ruff_cache/
