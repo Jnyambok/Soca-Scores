@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -5,7 +7,7 @@ class PredictRequest(BaseModel):
     home_team:  str
     away_team:  str
     date:       str   # YYYY-MM-DD
-    referee:    str
+    referee:    Optional[str] = None
     match_week: int = 20
 
 

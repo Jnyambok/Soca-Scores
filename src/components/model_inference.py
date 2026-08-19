@@ -12,6 +12,7 @@ import sys
 import pickle
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -96,13 +97,14 @@ class ModelInference:
             self.df = pd.read_csv(self.config.data_path)
             self.df["Date"] = pd.to_datetime(self.df["Date"])
             self.df = self.df.sort_values("Date").reset_index(drop=True)
+            self.default_referee = self.df["Referee"].mode().iloc[0]
             logging.info(f"Historical data loaded: {len(self.df)} rows")
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def _encode_label(self, encoder, value: str) -> int:
-        """Return encoded label, falling back to median index for unseen values (e.g. promoted teams)."""
-        if value not in encoder.classes_:
+    def _encode_label(self, encoder, value: Optional[str]) -> int:
+        """Return encoded label, falling back to median index for missing or unseen values."""
+        if not value or value not in encoder.classes_:
             logging.warning(f"Unknown label '{value}' — using median fallback encoding")
             return int(np.median(range(len(encoder.classes_))))
         return int(encoder.transform([value])[0])
@@ -133,22 +135,32 @@ class ModelInference:
         return {c: latest[c] for c in ["h2h_meetings", "h2h_home_win_rate",
                                         "h2h_avg_total_goals", "h2h_btts_rate"]}
 
-    def _get_referee_features(self, referee: str) -> dict:
-        rows = self.df[self.df["Referee"] == referee]
-        if rows.empty:
+    def _get_referee_features(self, referee: Optional[str]) -> dict:
+        def league_avg() -> dict:
             return {
                 "ref_avg_yellows":   float(self.df["ref_avg_yellows"].mean()),
                 "ref_avg_fouls":     float(self.df["ref_avg_fouls"].mean()),
                 "ref_home_win_rate": float(self.df["ref_home_win_rate"].mean()),
             }
+        if not referee:
+            return league_avg()
+        rows = self.df[self.df["Referee"] == referee]
+        if rows.empty:
+            return league_avg()
         return {c: rows.iloc[-1][c] for c in ["ref_avg_yellows", "ref_avg_fouls", "ref_home_win_rate"]}
 
     def build_features(self, home_team: str, away_team: str, date: str,
-                       referee: str, match_week: int = 20) -> pd.DataFrame:
+                       referee: Optional[str] = None, match_week: int = 20) -> pd.DataFrame:
+        """referee is optional -- real fixtures have none assigned until matchday.
+        When omitted, falls back to the most common referee in the dataset, using
+        their real encoded id and real stats together -- a pairing the model has
+        actually seen in training, rather than mixing an arbitrary id with
+        league-average stats (which would be a combination the model never saw)."""
         try:
             date_obj  = pd.to_datetime(date)
             month_num = date_obj.month
             day_name  = date_obj.day_name()
+            referee   = referee or self.default_referee
 
             features = {}
             features["home_team_encoded"] = self._encode_label(self.team_encoder, home_team)
@@ -173,7 +185,7 @@ class ModelInference:
             raise CustomException(e, sys) from e
 
     def predict(self, home_team: str, away_team: str, date: str,
-                referee: str, match_week: int = 20) -> dict:
+                referee: Optional[str] = None, match_week: int = 20) -> dict:
         try:
             X = self.build_features(home_team, away_team, date, referee, match_week)
 
@@ -223,7 +235,7 @@ if __name__ == "__main__":
     matches = [
         {"home_team": "Tottenham",   "away_team": "Brighton",  "date": "2026-04-18", "referee": "S Attwell", "match_week": 33},
         {"home_team": "Chelsea",   "away_team": "Man United",    "date": "2026-04-18", "referee": "M Oliver",  "match_week": 33},
-        {"home_team": "Everton", "away_team": "Liverpool",   "date": "2026-04-19", "referee": "C Kavanagh",  "match_week": 33},
+        {"home_team": "Everton", "away_team": "Liverpool",   "date": "2026-04-19",  "match_week": 33},
         {"home_team": "Man City", "away_team": "Arsenal",   "date": "2026-04-19", "referee": "A Taylor",  "match_week": 33},
     ]
 
