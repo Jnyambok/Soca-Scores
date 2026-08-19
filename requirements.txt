@@ -7,3 +7,13 @@ python-dotenv
 matplotlib
 ipykernel
 mlflow
+
+
+# missing packages added
+openpyxl
+fastapi
+uvicorn
+mlflow
+psycopg2-binary
+sqlalchemy
+pydantic
