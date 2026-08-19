@@ -97,16 +97,15 @@ class ModelInference:
             self.df = pd.read_csv(self.config.data_path)
             self.df["Date"] = pd.to_datetime(self.df["Date"])
             self.df = self.df.sort_values("Date").reset_index(drop=True)
+            self.default_referee = self.df["Referee"].mode().iloc[0]
             logging.info(f"Historical data loaded: {len(self.df)} rows")
         except Exception as e:
             raise CustomException(e, sys) from e
 
     def _encode_label(self, encoder, value: Optional[str]) -> int:
-        """Return encoded label, falling back to median index for missing or unseen
-        values (e.g. promoted teams, a referee not yet assigned to a fixture)."""
+        """Return encoded label, falling back to median index for missing or unseen values."""
         if not value or value not in encoder.classes_:
-            if value:
-                logging.warning(f"Unknown label '{value}' — using median fallback encoding")
+            logging.warning(f"Unknown label '{value}' — using median fallback encoding")
             return int(np.median(range(len(encoder.classes_))))
         return int(encoder.transform([value])[0])
 
@@ -137,26 +136,31 @@ class ModelInference:
                                         "h2h_avg_total_goals", "h2h_btts_rate"]}
 
     def _get_referee_features(self, referee: Optional[str]) -> dict:
-        league_avg = {
-            "ref_avg_yellows":   float(self.df["ref_avg_yellows"].mean()),
-            "ref_avg_fouls":     float(self.df["ref_avg_fouls"].mean()),
-            "ref_home_win_rate": float(self.df["ref_home_win_rate"].mean()),
-        }
+        def league_avg() -> dict:
+            return {
+                "ref_avg_yellows":   float(self.df["ref_avg_yellows"].mean()),
+                "ref_avg_fouls":     float(self.df["ref_avg_fouls"].mean()),
+                "ref_home_win_rate": float(self.df["ref_home_win_rate"].mean()),
+            }
         if not referee:
-            return league_avg
+            return league_avg()
         rows = self.df[self.df["Referee"] == referee]
         if rows.empty:
-            return league_avg
+            return league_avg()
         return {c: rows.iloc[-1][c] for c in ["ref_avg_yellows", "ref_avg_fouls", "ref_home_win_rate"]}
 
     def build_features(self, home_team: str, away_team: str, date: str,
                        referee: Optional[str] = None, match_week: int = 20) -> pd.DataFrame:
         """referee is optional -- real fixtures have none assigned until matchday.
-        When omitted, falls back to league-average referee features."""
+        When omitted, falls back to the most common referee in the dataset, using
+        their real encoded id and real stats together -- a pairing the model has
+        actually seen in training, rather than mixing an arbitrary id with
+        league-average stats (which would be a combination the model never saw)."""
         try:
             date_obj  = pd.to_datetime(date)
             month_num = date_obj.month
             day_name  = date_obj.day_name()
+            referee   = referee or self.default_referee
 
             features = {}
             features["home_team_encoded"] = self._encode_label(self.team_encoder, home_team)
