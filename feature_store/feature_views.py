@@ -30,7 +30,6 @@ categorical_fv = FeatureView(
         Field(name="away_team_encoded", dtype=Int64),
         Field(name="referee_encoded", dtype=Int64),
         Field(name="day_encoded", dtype=Int64),
-        Field(name="htr_encoded", dtype=Int64),
         Field(name="month_sin", dtype=Float64),
         Field(name="month_cos", dtype=Float64),
     ],
