@@ -14,3 +14,4 @@ mlflow
 psycopg2-binary
 sqlalchemy
 pydantic
+feast
