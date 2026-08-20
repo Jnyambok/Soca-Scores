@@ -22,6 +22,7 @@ from src.logger import logging
 from src.exception import CustomException
 
 from src.components.features import FEATURE_COLS
+from src.components.team_aliases import canonicalize_team_name
 
 
 RESULT_MAP = {0: "Away Win", 1: "Draw", 2: "Home Win"}
@@ -151,12 +152,22 @@ class ModelInference:
 
     def build_features(self, home_team: str, away_team: str, date: str,
                        referee: Optional[str] = None, match_week: int = 20) -> pd.DataFrame:
-        """referee is optional -- real fixtures have none assigned until matchday.
+        """home_team/away_team are canonicalized through TEAM_ALIASES first, so
+        fixture-list names (e.g. "Manchester City") resolve to the encoder's
+        short names (e.g. "Man City") instead of silently hitting the
+        unknown-team fallback. The encoder's own classes_ are also passed in
+        as known_names, so case/whitespace variants of any known team (e.g.
+        "arsenal") resolve too, not just the 10 explicitly aliased teams.
+
+        referee is optional -- real fixtures have none assigned until matchday.
         When omitted, falls back to the most common referee in the dataset, using
         their real encoded id and real stats together -- a pairing the model has
         actually seen in training, rather than mixing an arbitrary id with
         league-average stats (which would be a combination the model never saw)."""
         try:
+            home_team = canonicalize_team_name(home_team, self.team_encoder.classes_)
+            away_team = canonicalize_team_name(away_team, self.team_encoder.classes_)
+
             date_obj  = pd.to_datetime(date)
             month_num = date_obj.month
             day_name  = date_obj.day_name()

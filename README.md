@@ -1,19 +1,20 @@
 # ⚽ Soca Scores - MLOps Pipeline
 
-
-
-
 ## First Article in the Series : [ Phase 0: Setting up the Development Environment](https://medium.com/p/1960fb160e30)
+
 ## Second Article in the Series :[ Phase 1: Data Ingestion](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-c9c1d4f83187)
+
 ## Third Article in the Series :[ Phase 2: Data Cleaning and Transformation](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-8760a79ddfe1)
+
 ## Fourth Article in the Series :[Phase 3: Exploratory Data Analysis](https://medium.com/data-ai-and-beyond/what-the-last-20-years-of-premier-league-data-actually-tells-us-against-the-2025-26-season-67716dee2eac)
+
 ## Fifth Article in the Series :[Phase 4: Feature Engineering and Selection](https://medium.com/@juliusnyambok14/170fd31c2c76)
+
 ## Sixth Article in the Series : [Phase 5: Model Training and Inference](https://medium.com/@juliusnyambok14/bb73ce945855)
+
 ## Seventh Article in the Series : [Phase 6: Deployment](https://medium.com/data-ai-and-beyond/building-a-full-stack-mlops-system-predicting-the-2025-2026-english-premier-league-season-phase-695b0ea78ee6?source=friends_link&sk=dda00798ecffae23097a9db7b2e0eee0)
 
-
 [Data Project Structure Best Practices](https://medium.com/the-pythonworld/best-practices-for-structuring-a-python-project-like-a-pro-be6013821168)
-
 
 > **A comprehensive machine learning operations (MLOps) project for predicting English Premier League match outcomes using historical data and advanced feature engineering.**
 
@@ -23,16 +24,18 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
+
 To run python -m src. components.<module.py>
 Please note that some workflows and/or tools might be added or deleted at my discretion as per my needs.
 
-
 ## 🎯 **Project Overview**
-![alt text](image.png)<br />
+
+![alt text](image.png)
 
 This project implements a comprehensive MLOps pipeline for predicting Premier League match outcomes, including win/loss/draw probabilities, as well as goal predictions. Built with production-ready practices, the system ingests data from footballdata.uk, processes historical match data, engineers meaningful features, trains predictive models, and serves predictions through an interactive Streamlit dashboard.
 
 ### **🏆 Key Features**
+
 - **Automated Data Ingestion** from footballdata.uk
 - **Database Storage** through a serverless PostgreSQL DB
 - **Feature Store** for managing engineered features
@@ -46,6 +49,7 @@ This project implements a comprehensive MLOps pipeline for predicting Premier Le
 ## 🚀 **Approach & Methodology**
 
 ### **🔄 My MLOps Lifecycle approach**
+
 ```
 Data Ingestion → Data Cleaning,Transformation and DB Loading → EDA -> Feature Engineering and Feature Store Storage → Model Training → Evaluation → Deployment → Monitoring
         ↑                                                                                                                                                              ↓
@@ -53,18 +57,21 @@ Data Ingestion → Data Cleaning,Transformation and DB Loading → EDA -> Featur
 ```
 
 ### **📊 Data Strategy**
+
 - **Source**: Historical Premier League data from footballdata.UK (CSV format)
 - **Scope**: Multiple seasons of match data with team statistics
 - **Updates**: Weekly ingestion during active season
 - **Quality**: Automated validation and cleaning pipelines
 
 ### **🤖 Machine Learning Approach**
+
 - **Problem Type**: Multi-class classification (Win/Draw/Loss) + Regression (Goal prediction - optional or future consideration)
 - **Feature Engineering**: Team form, head-to-head records, player statistics, seasonal trends
 - **Model Selection**: Ensemble methods with hyperparameter optimization
 - **Evaluation**: Cross-validation with time-series split for temporal data
 
 ### **🏗️ MLOps Architecture**
+
 - **Orchestration**: Pipeline automation for data processing and model training
 - **Feature Store**: Centralized feature management with versioning
 - **Model Registry**: Automated model versioning and promotion
@@ -73,7 +80,7 @@ Data Ingestion → Data Cleaning,Transformation and DB Loading → EDA -> Featur
 
 ---
 
-## 📁 **Expected Project Structure (Might Change as per needed requirements)** 
+## 📁 **Expected Project Structure (Might Change as per needed requirements)**
 
 ```
 premier_league_predictions/  
@@ -142,7 +149,8 @@ premier_league_predictions/
 
 ```
 
-## 📁 **Current Project Structure** 
+## 📁 **Current Project Structure**
+
 ```
 └── jnyambok-soca-scores/
     ├── README.md
@@ -213,30 +221,32 @@ premier_league_predictions/
 
 ## 🛠️ **Technology Stack**
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| **Data Processing** | `pandas`, `numpy` | Data manipulation and analysis |
-| **Machine Learning** | `scikit-learn` | Model training and evaluation |
-| **Feature Store** | `Feast` / Custom | Feature management and serving |
-| **Database** | `NEON DB` | Data persistence |
-| **Orchestration** | `Apache Airflow`, `Prefect` | Pipeline automation |
-| **Experiment Tracking** | `MLflow` | Model versioning and tracking |
-| **Frontend** | `Streamlit` | Interactive dashboard |
-| **API** | `FastAPI` | REST API services |
-| **Containerization** | `Docker` | Application packaging |
-| **CI/CD** | `GitHub Actions` | Automated deployment |
-| **Monitoring** | `Grafana`, `Prometheus` | System and model monitoring |
+| Component                     | Technology                      | Purpose                        |
+| ----------------------------- | ------------------------------- | ------------------------------ |
+| **Data Processing**     | `pandas`, `numpy`           | Data manipulation and analysis |
+| **Machine Learning**    | `scikit-learn`                | Model training and evaluation  |
+| **Feature Store**       | `Feast` / Custom              | Feature management and serving |
+| **Database**            | `NEON DB`                     | Data persistence               |
+| **Orchestration**       | `Apache Airflow`, `Prefect` | Pipeline automation            |
+| **Experiment Tracking** | `MLflow`                      | Model versioning and tracking  |
+| **Frontend**            | `Streamlit`                   | Interactive dashboard          |
+| **API**                 | `FastAPI`                     | REST API services              |
+| **Containerization**    | `Docker`                      | Application packaging          |
+| **CI/CD**               | `GitHub Actions`              | Automated deployment           |
+| **Monitoring**          | `Grafana`, `Prometheus`     | System and model monitoring    |
 
 ---
 
 ## 🚀 **Quick Start**
 
 ### **Prerequisites**
+
 - Python 3.8+
 - PostgreSQL (optional, SQLite for local development)
 - Docker (for containerized deployment)
 
 ### **Installation**
+
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/premier_league_predictions.git
@@ -251,6 +261,7 @@ pip install -r requirements.txt
 ```
 
 ### **Run Start to Finish**
+
 ```bash
 # 1. Install dependencies
 pip install -r requirements.txt
@@ -296,55 +307,64 @@ streamlit run app.py
 ## 📊 **Model Performance Goals**
 
 ### **Target Metrics**
+
 - **Match Outcome Accuracy**: >55% (industry benchmark ~52%)
 - **Goal Prediction MAE**: <1.2 goals per match
 - **Confidence Calibration**: Well-calibrated probability predictions
 
 ### **Business Value**
+
 - Provide insights for football analytics
 - Support betting strategy research (educational purposes)
 - Demonstrate MLOps best practices in sports analytics
 
-
-
 ## 📈 **Roadmap**
 
 ### **Phase 0: Environment Setup** ✅
-- [x] Project structure and configuration
-- [x] Logging and exception handling
+
+- [X] Project structure and configuration
+- [X] Logging and exception handling
 
 ### **Phase 1: Data Ingestion** ✅
-- [x] Loading dataset URLs
-- [x] Ingesting data from footballdata.uk
-- [x] Merging datasets and storing locally
+
+- [X] Loading dataset URLs
+- [X] Ingesting data from footballdata.uk
+- [X] Merging datasets and storing locally
 
 ### **Phase 2: Data Cleaning and Database Loading** ✅
-- [x] Cleaning and transforming raw match data
-- [x] Loading cleaned data into Neon PostgreSQL
+
+- [X] Cleaning and transforming raw match data
+- [X] Loading cleaned data into Neon PostgreSQL
 
 ### **Phase 3: Exploratory Data Analysis** ✅
-- [x] 20 years of EPL data analysis
-- [x] Team form, referee, and seasonal trend analysis
+
+- [X] 20 years of EPL data analysis
+- [X] Team form, referee, and seasonal trend analysis
 
 ### **Phase 4: Feature Engineering and Feature Store** ✅
-- [x] 49 pre-match features across 7 groups
-- [x] Feast feature store with 8 feature views on Neon PostgreSQL
+
+- [X] 49 pre-match features across 7 groups
+- [X] Feast feature store with 8 feature views on Neon PostgreSQL
 
 ### **Phase 5: Model Training and Inference** ✅
-- [x] 5 XGBoost models (result, BTTS, over 2.5, over 1.5, total goals)
-- [x] MLflow experiment tracking and model registry
-- [x] FastAPI inference endpoint
+
+- [X] 5 XGBoost models (result, BTTS, over 2.5, over 1.5, total goals)
+- [X] MLflow experiment tracking and model registry
+- [X] FastAPI inference endpoint
 
 ### **Phase 6: Deployment** ✅
-- [x] Streamlit web interface deployed to Streamlit Cloud
-- [x] Local model files (.ubj) for dependency-free deployment
+
+- [X] Streamlit web interface deployed to Streamlit Cloud
+- [X] Local model files (.ubj) for dependency-free deployment
 
 ### **Phase 7: Evaluation** 📋
+
 - [ ] Brier score and calibration curves
 - [ ] Confusion matrix and backtesting
 - [ ] Baseline comparison
 
 ### **Phase 8: Monitoring and Improvement** 🚀
+
 - [ ] Live data feed and weekly retraining
 - [ ] Pi-ratings / Elo features
 - [ ] Cross-league generalisation
@@ -356,35 +376,41 @@ streamlit run app.py
 Tracking the push toward Game Week 1 (22 Aug 2026) and the season-long Monte Carlo simulation. Updated as work lands.
 
 ### **1. Chores & Bug Fixes**
+
 - [x] Fix `model_dir` → `models_dir` typo in `model_inference.py` (broke calibrated BTTS/Over 2.5 loading)
-- [ ] Regenerate `requirements.txt` from a clean venv (`openpyxl`, `fastapi`, `uvicorn`, `mlflow`, `feast`, `psycopg2-binary`, `sqlalchemy`, `pydantic` are imported but missing)
-- [ ] Make `referee` optional in `predict()` / `build_features()` — real fixtures have no referee assigned until matchday
-- [ ] Fix `src/logger.py` directory-nesting bug (`os.makedirs` on a file path, not its parent)
-- [ ] Reconcile `FEATURE_COLS` (`features.py`) vs `FEATURE_COLUMNS` (`push_features.py`) drift
-- [ ] Drop the stray `english_league_data_urls copy.csv`
+- [x] Regenerate `requirements.txt` from a clean venv (`openpyxl`, `fastapi`, `uvicorn`, `mlflow`, `feast`, `psycopg2-binary`, `sqlalchemy`, `pydantic` are imported but missing)
+- [x] Make `referee` optional in `predict()` / `build_features()` — real fixtures have no referee assigned until matchday
+- [x] Fix `src/logger.py` directory-nesting bug (`os.makedirs` on a file path, not its parent)
+- [x] Reconcile `FEATURE_COLS` (`features.py`) vs `FEATURE_COLUMNS` (`push_features.py`) drift
+- [x] Drop the stray `english_league_data_urls copy.csv`
 
 ### **2. Team Name Canonicalization**
-- [ ] Build fixture-name → encoder-name alias map (10 of 20 2026/27 teams currently mismatch, e.g. "Manchester City" vs "Man City")
-- [ ] Explicit handling + documented limitation for Coventry City (genuinely zero PL history in the dataset)
+
+- [x] Build fixture-name → encoder-name alias map (10 of 20 2026/27 teams currently mismatch, e.g. "Manchester City" vs "Man City")
+- [x] Explicit handling + documented limitation for Coventry City (genuinely zero PL history in the dataset)
 - [ ] Test: alias map covers all 20 current fixture-file teams
 
 ### **3. Game Week 1 Predictions**
+
 - [ ] Script: load fixture file → filter to GW1 → run through inference → clean output table
 - [ ] Sanity-check outputs against Phase 7 evaluation numbers before publishing
 - [ ] Article write-up
 
 ### **4. Monte Carlo Season Simulation**
+
 - [ ] Per-team Poisson goal simulation (goals model itself is unreliable per Phase 7 — needed for goal-difference tie-breaks only)
 - [ ] Simulate all 380 fixtures × N runs (10k+)
 - [ ] Aggregate into final-table rank distributions (1–20), title/top-4/relegation probabilities
 - [ ] Visualizations for the article
 
 ### **5. Interactive Predictions Interface**
+
 - [ ] Team crest/logo assets (source + store, mapped through the same canonical team names from #2)
 - [ ] Interactive fixture picker in the app so users can select a matchup and see predictions live
 - [ ] Wire logos into both the GW1 view and the season-simulation view
 
 ### **6. Engineering Practices / Infra**
+
 - [ ] pytest suite, starting with: alias-map coverage, feature schema consistency, inference smoke test
 - [ ] GitHub Actions workflow that actually runs pytest on push/PR (replacing the unrelated static-pages template)
 - [ ] Branch protection on `main` requiring that check
@@ -398,6 +424,7 @@ Tracking the push toward Game Week 1 (22 Aug 2026) and the season-long Monte Car
 Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ### **Development Workflow**
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
@@ -419,6 +446,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Open Source Community** for the amazing tools and libraries
 
 ---
-
 
 *Built with ❤️ for football analytics and MLOps excellence*
