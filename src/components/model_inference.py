@@ -155,7 +155,9 @@ class ModelInference:
         """home_team/away_team are canonicalized through TEAM_ALIASES first, so
         fixture-list names (e.g. "Manchester City") resolve to the encoder's
         short names (e.g. "Man City") instead of silently hitting the
-        unknown-team fallback.
+        unknown-team fallback. The encoder's own classes_ are also passed in
+        as known_names, so case/whitespace variants of any known team (e.g.
+        "arsenal") resolve too, not just the 10 explicitly aliased teams.
 
         referee is optional -- real fixtures have none assigned until matchday.
         When omitted, falls back to the most common referee in the dataset, using
@@ -163,8 +165,8 @@ class ModelInference:
         actually seen in training, rather than mixing an arbitrary id with
         league-average stats (which would be a combination the model never saw)."""
         try:
-            home_team = canonicalize_team_name(home_team)
-            away_team = canonicalize_team_name(away_team)
+            home_team = canonicalize_team_name(home_team, self.team_encoder.classes_)
+            away_team = canonicalize_team_name(away_team, self.team_encoder.classes_)
 
             date_obj  = pd.to_datetime(date)
             month_num = date_obj.month

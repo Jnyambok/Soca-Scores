@@ -39,10 +39,29 @@ _ALIASES_BY_NORMALIZED_KEY = {
 }
 
 
-def canonicalize_team_name(name: str) -> str:
+def canonicalize_team_name(name: str, known_names=None) -> str:
     """Map a fixture-list team name to its encoder-known name, case/whitespace
-    insensitively. Names not in TEAM_ALIASES (already-correct names, and
-    genuinely new teams like Coventry City) pass through unchanged (stripped)."""
+    insensitively.
+
+    known_names (typically ModelInference.team_encoder.classes_) is checked
+    case/whitespace-insensitively too, so already-correct names (e.g.
+    "Arsenal") also resolve when sent as "arsenal" or "ARSENAL " -- TEAM_ALIASES
+    alone only covers the 10 teams whose fixture-list name differs in *form*
+    (long-form vs short-form), not casing, from the encoder. Without
+    known_names, only the 10 aliased teams get case/whitespace normalization;
+    passing it closes the gap for every known team, using the encoder itself
+    as the source of truth instead of a second hand-maintained name list.
+
+    Names matching neither TEAM_ALIASES nor known_names (genuinely new teams
+    like Coventry City) pass through unchanged (stripped)."""
     if not name:
         return name
-    return _ALIASES_BY_NORMALIZED_KEY.get(name.strip().casefold(), name.strip())
+    stripped = name.strip()
+    normalized = stripped.casefold()
+    if normalized in _ALIASES_BY_NORMALIZED_KEY:
+        return _ALIASES_BY_NORMALIZED_KEY[normalized]
+    if known_names is not None:
+        for known in known_names:
+            if known.strip().casefold() == normalized:
+                return known
+    return stripped
