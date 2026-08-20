@@ -388,7 +388,11 @@ Tracking the push toward Game Week 1 (22 Aug 2026) and the season-long Monte Car
 
 - [x] Build fixture-name → encoder-name alias map (10 of 20 2026/27 teams currently mismatch, e.g. "Manchester City" vs "Man City")
 - [x] Explicit handling + documented limitation for Coventry City (genuinely zero PL history in the dataset)
-- [ ] Test: alias map covers all 20 current fixture-file teams
+- [x] Test: alias map covers all 20 current fixture-file teams
+
+**Known minor debt** (found by `/code-review`, deliberately deferred — not currently reachable by any real caller):
+- [ ] `canonicalize_team_name()` only guards falsy input; a real `NaN` (e.g. a missing team name from a pandas column) would crash on `.strip()` instead of degrading gracefully
+- [ ] The `known_names` fallback rescans and re-normalizes all 44 team names on every call instead of building the lookup once
 
 ### **3. Game Week 1 Predictions**
 
