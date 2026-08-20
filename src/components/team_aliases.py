@@ -30,8 +30,19 @@ TEAM_ALIASES = {
 }
 
 
+# Case/whitespace-insensitive lookup so API callers that don't send exact
+# FA capitalization (e.g. "manchester city", or a trailing space from
+# copy-pasted fixture text) still resolve instead of silently degrading
+# to the unknown-team fallback.
+_ALIASES_BY_NORMALIZED_KEY = {
+    alias.strip().casefold(): canonical for alias, canonical in TEAM_ALIASES.items()
+}
+
+
 def canonicalize_team_name(name: str) -> str:
-    """Map a fixture-list team name to its encoder-known name.
-    Names not in TEAM_ALIASES (already-correct names, and genuinely new
-    teams like Coventry City) pass through unchanged."""
-    return TEAM_ALIASES.get(name, name)
+    """Map a fixture-list team name to its encoder-known name, case/whitespace
+    insensitively. Names not in TEAM_ALIASES (already-correct names, and
+    genuinely new teams like Coventry City) pass through unchanged (stripped)."""
+    if not name:
+        return name
+    return _ALIASES_BY_NORMALIZED_KEY.get(name.strip().casefold(), name.strip())

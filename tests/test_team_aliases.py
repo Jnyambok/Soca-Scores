@@ -47,3 +47,16 @@ def test_alias_map_targets_are_all_real_encoder_names(known_encoder_teams):
 
     bad_targets = {v for v in TEAM_ALIASES.values() if v not in known_encoder_teams}
     assert not bad_targets, f"TEAM_ALIASES points to names the encoder doesn't know: {bad_targets}"
+
+
+@pytest.mark.parametrize("raw,expected", [
+    ("manchester city", "Man City"),
+    ("Manchester City ", "Man City"),
+    ("  MANCHESTER CITY", "Man City"),
+    ("Arsenal", "Arsenal"),          # already-correct name, not in TEAM_ALIASES
+    ("Coventry City", "Coventry City"),  # documented exception, passes through
+    ("", ""),
+    (None, None),
+])
+def test_canonicalize_is_case_and_whitespace_insensitive(raw, expected):
+    assert canonicalize_team_name(raw) == expected
