@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soca Scores — Game Week Predictions</title>
+<meta name="description" content="EPL Game Week predictions from a model trained on 20 years of Premier League results.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%9A%BD</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: oklch(0.16 0.012 258);
+    --surface: oklch(0.20 0.013 258);
+    --surface-2: oklch(0.24 0.014 258);
+    --border: oklch(0.30 0.014 258);
+    --text: oklch(0.96 0.004 258);
+    --text-muted: oklch(0.68 0.012 258);
+    --text-faint: oklch(0.52 0.012 258);
+    --home-color: oklch(0.72 0.15 150);
+    --away-color: oklch(0.70 0.16 25);
+    --draw-color: oklch(0.50 0.01 258);
+    --accent: #e8a33d;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Manrope', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); font-family: var(--font-body); color: var(--text); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { opacity: 0.85; }
+  ::selection { background: var(--accent); color: #1a1206; }
+
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 20px; border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.01em; }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+
+  .switcher { text-align: center; padding: 40px 0 8px; }
+  .switcher-title { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 5vw, 30px); letter-spacing: -0.01em; }
+  .switcher-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+  .switcher-note { text-align: center; font-size: 12px; color: var(--text-faint); margin-bottom: 32px; }
+
+  .how { display: flex; gap: 14px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px; margin-bottom: 40px; }
+  .how svg { flex-shrink: 0; margin-top: 2px; }
+  .how-text { font-size: 13.5px; line-height: 1.6; color: var(--text-muted); }
+  .how-text b { color: var(--text); font-weight: 600; }
+
+  .group-label { font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-faint); padding: 0 4px 12px; margin-top: 32px; }
+  .group-label:first-of-type { margin-top: 0; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; margin-bottom: 10px; }
+  .row { display: flex; align-items: center; gap: 16px; padding: 16px 20px; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; }
+  .row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .kickoff { width: 46px; font-size: 12.5px; color: var(--text-faint); font-weight: 600; flex-shrink: 0; }
+  .teams { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
+  .badge { width: 30px; height: 30px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-display);
+    font-size: 10px; font-weight: 700; flex-shrink: 0; }
+  .team-name { font-size: 14px; font-weight: 600; }
+  .vs { color: var(--text-faint); font-size: 12px; }
+  .bar-col { width: 190px; flex-shrink: 0; }
+  .bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--surface-2); }
+  .bar-labels { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10.5px;
+    color: var(--text-faint); font-weight: 600; }
+  .chevron { width: 16px; flex-shrink: 0; color: var(--text-faint); transition: transform 0.15s ease; }
+  .row.expanded .chevron { transform: rotate(180deg); }
+
+  .detail { padding: 4px 20px 22px; border-top: 1px solid var(--border); display: none; }
+  .row.expanded + .detail { display: block; }
+  .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; margin-top: 18px; }
+  @media (min-width: 560px) { .stat-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+  .stat { background: var(--surface-2); border-radius: 10px; padding: 14px; }
+  .stat-label { font-size: 11px; color: var(--text-faint); font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 8px; }
+  .stat-val { font-family: var(--font-display); font-weight: 700; font-size: 17px; }
+  .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .footer { text-align: center; font-size: 12px; color: var(--text-faint); padding: 40px 0 0; }
+
+  @media (max-width: 520px) {
+    .bar-col { width: 100px; }
+    .kickoff { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+      <rect x="1" y="1" width="28" height="28" rx="8" stroke="#e8a33d" stroke-width="2"/>
+      <path d="M9 19 L14 11 L18 16 L21 9" stroke="#e8a33d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div class="brand-name">Soca Scores</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="switcher">
+    <div class="switcher-title">Game Week 1</div>
+    <div class="switcher-sub">Fri 21 &ndash; Mon 24 Aug 2026 &middot; 2026/27 season opener</div>
+  </div>
+  <div class="switcher-note">Future game weeks are added as fixtures are confirmed.</div>
+
+  <div class="how">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <circle cx="10" cy="10" r="8.5" stroke="#e8a33d" stroke-width="1.6"/>
+      <path d="M10 9V14.2" stroke="#e8a33d" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="10" cy="6.3" r="1.1" fill="#e8a33d"/>
+    </svg>
+    <div class="how-text">
+      <b>How to read these numbers.</b>
+      Percentages come from a model trained on 20 years of Premier League results, tested on 3 full seasons it never saw in training &mdash; 49.3% match-result accuracy against a 42.5% always-predict-home baseline. Treat them as informed estimates, not certainties, especially on draws, which the model rarely favours. Kickoff times aren't yet confirmed for this game week.
+    </div>
+  </div>
+
+  <div id="fixtures"></div>
+
+  <div class="footer">Predictions generated from the Soca Scores result, BTTS, over/under and goals models. Not betting advice.</div>
+</div>
+
+<script>
+// Real model output -- generated by experiments/scripts/predict_gameweek.py
+const FIXTURES = [
+  { dateGroup: "Fri 21 Aug", home: { code: "ARS", name: "Arsenal" }, away: { code: "COV", name: "Coventry City" }, result: { home: 79, draw: 10, away: 11 }, btts: { yes: true, prob: 51 }, over15: { yes: true, prob: 83 }, over25: { yes: true, prob: 54 }, totalGoals: "3.4" },
+  { dateGroup: "Sat 22 Aug", home: { code: "HUL", name: "Hull City" }, away: { code: "MUN", name: "Manchester United" }, result: { home: 19, draw: 27, away: 53 }, btts: { yes: true, prob: 57 }, over15: { yes: true, prob: 87 }, over25: { yes: true, prob: 53 }, totalGoals: "3.5" },
+  { dateGroup: "Sat 22 Aug", home: { code: "EVE", name: "Everton" }, away: { code: "CRY", name: "Crystal Palace" }, result: { home: 44, draw: 35, away: 21 }, btts: { yes: true, prob: 52 }, over15: { yes: true, prob: 72 }, over25: { yes: true, prob: 52 }, totalGoals: "2.8" },
+  { dateGroup: "Sat 22 Aug", home: { code: "IPS", name: "Ipswich Town" }, away: { code: "SUN", name: "Sunderland" }, result: { home: 27, draw: 31, away: 43 }, btts: { yes: true, prob: 51 }, over15: { yes: false, prob: 49 }, over25: { yes: false, prob: 49 }, totalGoals: "2.3" },
+  { dateGroup: "Sat 22 Aug", home: { code: "NFO", name: "Nottingham Forest" }, away: { code: "LEE", name: "Leeds United" }, result: { home: 41, draw: 31, away: 28 }, btts: { yes: true, prob: 53 }, over15: { yes: true, prob: 61 }, over25: { yes: true, prob: 52 }, totalGoals: "2.6" },
+  { dateGroup: "Sat 22 Aug", home: { code: "BRE", name: "Brentford" }, away: { code: "TOT", name: "Tottenham Hotspur" }, result: { home: 56, draw: 18, away: 26 }, btts: { yes: true, prob: 52 }, over15: { yes: true, prob: 75 }, over25: { yes: true, prob: 53 }, totalGoals: "3.6" },
+  { dateGroup: "Sun 23 Aug", home: { code: "BHA", name: "Brighton & Hove Albion" }, away: { code: "AVL", name: "Aston Villa" }, result: { home: 39, draw: 35, away: 26 }, btts: { yes: true, prob: 51 }, over15: { yes: true, prob: 72 }, over25: { yes: true, prob: 52 }, totalGoals: "2.9" },
+  { dateGroup: "Sun 23 Aug", home: { code: "MCI", name: "Manchester City" }, away: { code: "BOU", name: "AFC Bournemouth" }, result: { home: 60, draw: 20, away: 20 }, btts: { yes: true, prob: 53 }, over15: { yes: true, prob: 85 }, over25: { yes: true, prob: 52 }, totalGoals: "3.3" },
+  { dateGroup: "Sun 23 Aug", home: { code: "NEW", name: "Newcastle United" }, away: { code: "LIV", name: "Liverpool" }, result: { home: 55, draw: 22, away: 23 }, btts: { yes: true, prob: 53 }, over15: { yes: true, prob: 82 }, over25: { yes: true, prob: 52 }, totalGoals: "3.1" },
+  { dateGroup: "Mon 24 Aug", home: { code: "FUL", name: "Fulham" }, away: { code: "CHE", name: "Chelsea" }, result: { home: 41, draw: 33, away: 26 }, btts: { yes: true, prob: 52 }, over15: { yes: true, prob: 70 }, over25: { yes: false, prob: 50 }, totalGoals: "2.6" },
+];
+
+function resultPick(f) {
+  const r = f.result;
+  if (r.home >= r.draw && r.home >= r.away) return { label: f.home.name + " Win", prob: r.home };
+  if (r.away >= r.draw && r.away >= r.home) return { label: f.away.name + " Win", prob: r.away };
+  return { label: "Draw", prob: r.draw };
+}
+
+const root = document.getElementById("fixtures");
+let lastGroup = null;
+
+FIXTURES.forEach((f, i) => {
+  if (f.dateGroup !== lastGroup) {
+    const label = document.createElement("div");
+    label.className = "group-label";
+    label.textContent = f.dateGroup;
+    root.appendChild(label);
+    lastGroup = f.dateGroup;
+  }
+
+  const pick = resultPick(f);
+
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <div class="row" tabindex="0" role="button" aria-expanded="false">
+      <div class="kickoff">TBC</div>
+      <div class="teams">
+        <div class="badge">${f.home.code}</div>
+        <div class="team-name">${f.home.name}</div>
+        <div class="vs">vs</div>
+        <div class="team-name">${f.away.name}</div>
+        <div class="badge">${f.away.code}</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar">
+          <div style="width:${f.result.home}%; background:var(--home-color);"></div>
+          <div style="width:${f.result.draw}%; background:var(--draw-color);"></div>
+          <div style="width:${f.result.away}%; background:var(--away-color);"></div>
+        </div>
+        <div class="bar-labels"><div>${f.result.home}%</div><div>${f.result.draw}%</div><div>${f.result.away}%</div></div>
+      </div>
+      <div class="chevron">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="detail">
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-label">Result</div><div class="stat-val">${pick.label}</div><div class="stat-sub">${pick.prob}% confidence</div></div>
+        <div class="stat"><div class="stat-label">Both teams to score</div><div class="stat-val">${f.btts.yes ? "Yes" : "No"}</div><div class="stat-sub">${f.btts.prob}% probability</div></div>
+        <div class="stat"><div class="stat-label">Over 2.5 goals</div><div class="stat-val">${f.over25.yes ? "Yes" : "No"}</div><div class="stat-sub">${f.over25.prob}% probability</div></div>
+        <div class="stat"><div class="stat-label">Predicted goals</div><div class="stat-val">${f.totalGoals}</div><div class="stat-sub">total, both teams</div></div>
+      </div>
+    </div>
+  `;
+  root.appendChild(card);
+
+  const row = card.querySelector(".row");
+  const toggle = () => {
+    const isOpen = row.classList.toggle("expanded");
+    row.setAttribute("aria-expanded", String(isOpen));
+  };
+  row.addEventListener("click", toggle);
+  row.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+  });
+});
+</script>
+
+</body>
+</html>
